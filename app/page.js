@@ -30,8 +30,11 @@ Contact        </Navbar.Link>
       </Navbar.Collapse>
     </Navbar>
 
+<div className="flex flex-row">
 <ExampleChart type="line"/>
 <ExampleChart type='bar'/>
+<ExampleChart type='area'/>
+</div>
     
     </main>
   );
