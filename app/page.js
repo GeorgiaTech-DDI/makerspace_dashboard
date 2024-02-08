@@ -34,6 +34,7 @@ Contact        </Navbar.Link>
 <ExampleChart type="line"/>
 <ExampleChart type='bar'/>
 <ExampleChart type='area'/>
+<ExampleChart type='area'/>
 </div>
     
     </main>
