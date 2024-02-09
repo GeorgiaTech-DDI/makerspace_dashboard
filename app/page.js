@@ -1,5 +1,4 @@
 'use client';
-import Chart from "react-apexcharts";
 
 
 import Link from 'next/link';
@@ -10,7 +9,16 @@ import ExampleAPIChart from "@/components/exampleapichart";
 import { Dropdown } from 'flowbite-react';
 import { IoCalendarNumber } from "react-icons/io5";
 import { FaBeer } from 'react-icons/fa';
+import  { CustomFlowbiteTheme } from 'flowbite-react';
 
+
+const customTheme = {
+  button: {
+    color: {
+      primary: 'bg-red-500 hover:bg-red-600',
+    },
+  },
+};
 
 export default function Home() {
 
@@ -45,14 +53,14 @@ Contact        </Navbar.Link>
 
 
     
-    <div>
+    <div className='flex flex-row'>
 
-  <Dropdown label="Update Dashboard" class="bg-gt-gold text-white">
+  <Dropdown color="light" label="Update Dashboard" className='rounded-none'>
       <Dropdown.Item>Settings</Dropdown.Item>
       <Dropdown.Item>Sign out</Dropdown.Item>
       </Dropdown>
-
-      <Dropdown label="Tools" class="bg-gt-gold text-white ml-2">
+<div className='m-2'></div>
+      <Dropdown label="Tools" color='light' className='rounded-none'>
       <Dropdown.Item>Wood Room</Dropdown.Item>
       <Dropdown.Item>Metal Room</Dropdown.Item>
       

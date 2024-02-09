@@ -25,7 +25,7 @@ export default function ExampleChart(props){
     return(
 
 
-        <div className="h-96 bg-white drop-shadow-lg">
+        <div className="h-96 bg-white rounded-lg drop-shadow-lg">
 
             <ApexChart type={props.type} options={option} series={series} height={'100%'} width={'100%'} />
         </div>

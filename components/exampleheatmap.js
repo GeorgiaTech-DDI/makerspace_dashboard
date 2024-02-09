@@ -102,7 +102,7 @@ export default function ExampleHeatMap(props){
     return(
 
 
-        <div className="bg-white h-96 drop-shadow-lg">
+        <div className="bg-white rounded-lg h-96 drop-shadow-lg">
          
 
             <ApexChart type={props.type} options={option} series={series} height={'100%'} width={'100%'} />
