@@ -5,6 +5,8 @@ import Chart from "react-apexcharts";
 import Link from 'next/link';
 import { Navbar } from 'flowbite-react';
 import ExampleChart from '../components/examplechart'
+import ExampleAPIChart from '../components/exampleAPIChart'
+
 export default function Home() {
 
 
@@ -34,6 +36,7 @@ Contact        </Navbar.Link>
 <ExampleChart type="line"/>
 <ExampleChart type='bar'/>
 <ExampleChart type='area'/>
+<ExampleAPIChart type='bar'/>
 </div>
     
     </main>
