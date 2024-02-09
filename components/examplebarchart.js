@@ -8,6 +8,8 @@ const ApexChart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 export default function ExampleBarChart(){
 
+    
+
     const option = {
         chart: {
           id: 'apexchart-example'
@@ -21,6 +23,8 @@ export default function ExampleBarChart(){
         name: 'series-1',
         data: [30, 40, 35, 50, 49, 60, 70, 91, 125]
       }]
+
+      
 
     return(
 

@@ -9,6 +9,22 @@ const ApexChart = dynamic(() => import("react-apexcharts"), { ssr: false });
 export default function ExampleHeatMap(props){
 
     const option = {
+      title: {
+        text: "Visitor Frequency",
+        align: 'left',
+        margin: 10,
+        offsetX: 0,
+        offsetY: 0,
+        floating: false,
+        style: {
+          fontSize:  '14px',
+          fontWeight:  'bold',
+          fontFamily:  undefined,
+          color:  '#263238'
+      }
+
+      },
+
       chart: {
         id: "heatmap"
       },
@@ -60,10 +76,34 @@ export default function ExampleHeatMap(props){
         data: [60, 20, 90, 80, 30, 60, 10, 50]
 
     }]
+
+
+
+    const titleOptions = {
+      text: "Visitor Frequency",
+      align: 'left',
+      margin: 10,
+      offsetX: 0,
+      offsetY: 0,
+      floating: false,
+      style: {
+        fontSize:  '14px',
+        fontWeight:  'bold',
+        fontFamily:  undefined,
+        color:  '#263238'
+    }
+  }
+
+
+
+
+
+
     return(
 
 
-        <div className="bg-white w-96 h-96 rounded-lg drop-shadow-lg m-3">
+        <div className="bg-white h-96 drop-shadow-lg">
+         
 
             <ApexChart type={props.type} options={option} series={series} height={'100%'} width={'100%'} />
         </div>

@@ -9,7 +9,11 @@ module.exports = {
   theme: {
     extend:{
       colors:{
-        'gt-gold': '#B3A369'
+        'gt-gold': '#B3A369',
+        'gt-diploma': '#F9F6E5',
+        'gt-buzz': '#EAAA00',
+        'gt-gray': '#54585A',
+        'gt-pi': '#D6DBD4'
       }
     }
   },

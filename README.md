@@ -42,4 +42,8 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 
 Learn about project structure and routing https://nextjs.org/docs/app/building-your-application
 
+### Tailwind CSS
+
+
+
 

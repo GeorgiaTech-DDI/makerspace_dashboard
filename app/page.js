@@ -7,6 +7,11 @@ import { Navbar } from 'flowbite-react';
 import ExampleChart from '../components/examplechart'
 import ExampleHeatMap from "@/components/exampleheatmap";
 import ExampleAPIChart from "@/components/exampleapichart";
+import { Dropdown } from 'flowbite-react';
+import { IoCalendarNumber } from "react-icons/io5";
+import { FaBeer } from 'react-icons/fa';
+
+
 export default function Home() {
 
 
@@ -32,14 +37,42 @@ Contact        </Navbar.Link>
       </Navbar.Collapse>
     </Navbar>
 
-<div className="flex flex-row">
+    <div className="m-2">
+    <div className="flex flex-row justify-between items-center m-2">
+  <div className="text-2xl text-white font-sans font-semibold	">
+    Flowers Invention Studio
+  </div>
+
+
+    
+    <div>
+
+  <Dropdown label="Update Dashboard" class="bg-gt-gold text-white">
+      <Dropdown.Item>Settings</Dropdown.Item>
+      <Dropdown.Item>Sign out</Dropdown.Item>
+      </Dropdown>
+
+      <Dropdown label="Tools" class="bg-gt-gold text-white ml-2">
+      <Dropdown.Item>Wood Room</Dropdown.Item>
+      <Dropdown.Item>Metal Room</Dropdown.Item>
+      
+      </Dropdown>
+      </div>
+      </div>
+
+<div className="m-2 grid grid-cols-4 gap-4 content-end">
 <ExampleChart type="line"/>
 <ExampleChart type='bar'/>
 <ExampleChart type='area'/>
+<ExampleChart type='area'/>
+
 </div>
-<div className="flex flex-row">
+<div className=" m-2 grid grid-cols-2 gap-4 content-end">
 <ExampleHeatMap type='heatmap'/>
-<ExampleAPIChart type='bar'/>
+<ExampleHeatMap type='heatmap'/>
+
+</div>
+
 </div>
     
     </main>
