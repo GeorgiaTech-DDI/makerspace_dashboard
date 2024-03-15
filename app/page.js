@@ -10,6 +10,7 @@ import { Dropdown } from 'flowbite-react';
 import { IoCalendarNumber } from "react-icons/io5";
 import { FaBeer } from 'react-icons/fa';
 import  { CustomFlowbiteTheme } from 'flowbite-react';
+import ToolStatus from '@/components/toolStatus';
 
 
 const customTheme = {
@@ -76,7 +77,7 @@ Contact        </Navbar.Link>
 </div> */}
 <div className=" m-2 grid grid-cols-2 gap-4 content-end">
 <ExampleChart type="line"/>
-<ExampleHeatMap type='heatmap'/>
+<ToolStatus/>
 
 </div>
 
