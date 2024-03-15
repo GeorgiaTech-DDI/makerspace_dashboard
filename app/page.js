@@ -3,9 +3,9 @@
 
 import Link from 'next/link';
 import { Navbar } from 'flowbite-react';
-import ExampleChart from '../components/examplechart'
+// import ExampleChart from '../components/examplechart'
 import ExampleHeatMap from "@/components/exampleheatmap";
-import ExampleAPIChart from "@/components/exampleapichart";
+import ExampleChart from "@/components/exampleapichart";
 import { Dropdown } from 'flowbite-react';
 import { IoCalendarNumber } from "react-icons/io5";
 import { FaBeer } from 'react-icons/fa';
@@ -68,15 +68,14 @@ Contact        </Navbar.Link>
       </div>
       </div>
 
-<div className="m-2 grid grid-cols-4 gap-4 content-end">
+{/* <div className="m-2 grid grid-cols-4 gap-4 content-end">
 <ExampleChart type="line"/>
 <ExampleChart type='bar'/>
-<ExampleChart type='area'/>
-<ExampleChart type='area'/>
 
-</div>
+
+</div> */}
 <div className=" m-2 grid grid-cols-2 gap-4 content-end">
-<ExampleHeatMap type='heatmap'/>
+<ExampleChart type="line"/>
 <ExampleHeatMap type='heatmap'/>
 
 </div>

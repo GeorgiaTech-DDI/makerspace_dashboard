@@ -1,60 +1,42 @@
-// charts.tsx/jsx
+import { useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
 
-'use client' // if you use app dir, don't forget this line
+const ApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
-import dynamic from "next/dynamic";
-const ApexChart = dynamic(() => import("react-apexcharts"), { ssr: false });
+export default function ExampleChart(props) {
+  const [series, setSeries] = useState([]);
+  const [categories, setCategories] = useState([]);
 
-
-export default function ExampleAPIChart(){
-
-    const option = {
-        chart: {
-          id: 'apichart',
-          type: 'bar',
-        }, 
-        noData: {
-            text: 'Loading...',
-        }
+  useEffect(() => {
+    // fetching the first 10 pokemon from poke API and showing their base experience
+    const fetchPokemonData = async () => {
+      let pokemonData = [];
+      let pokemonNames = [];
+      for (let i = 1; i <= 10; i++) {
+        const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${i}`);
+        const data = await response.json();
+        pokemonData.push(data.base_experience);
+        pokemonNames.push(data.name);
       }
+      setSeries([{ name: 'Base Experience', data: pokemonData }]);
+      setCategories(pokemonNames);
+    };
 
-    const series = [{
-        name: 'series-1',
-        data: []
-      }]
+    fetchPokemonData();
+  }, []);
 
-    
-    
-    const url = "https://jsonplaceholder.typicode.com/todos";
-        const options = {
-            method: "POST",
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json;charset=UTF-8",
-        },
-            body: JSON.stringify({
-                a: 20,
-                b: 10,
-            }),
-        };
-        fetch(url, options).then((response) => response.json()).then((data) => {console.log(data);
-    });
-    // var url = 'http://my-json-server.typicode.com/apexcharts/apexcharts.js/yearly';
-    // getJSON(url, function(response) {
-    //     chart.updateSeries([{
-    //       name: 'Sales',
-    //       data: response
-    //     }])
-    //   });
-    // getSales();61
-    
-    return(
+  const options = {
+    chart: {
+      id: 'basic-bar',
+    },
+    xaxis: {
+      categories: categories,
+    },
+  };
 
-
-        <div className="bg-white w-96 h-96 rounded-lg drop-shadow-lg m-3">
-
-            <ApexChart type="bar" options={option} series={series} height={'100%'} width={'100%'} />
-        </div>
-    )
-    
+  return (
+    <div className="bg-white h-96 rounded-lg drop-shadow-lg">
+      <ApexChart type={props.type} options={options} series={series} height={'100%'} width={'100%'} />
+    </div>
+  );
 }
