@@ -11,7 +11,8 @@ import { IoCalendarNumber } from "react-icons/io5";
 import { FaBeer } from 'react-icons/fa';
 import  { CustomFlowbiteTheme } from 'flowbite-react';
 import ToolStatus from '@/components/toolStatus';
-
+import MediaQuery from 'react-responsive'
+import React, { useState, useEffect } from 'react';
 
 const customTheme = {
   button: {
@@ -23,7 +24,19 @@ const customTheme = {
 
 export default function Home() {
 
+  const [screenWidth, setScreenWidth] = useState(window.screen.width);
 
+  useEffect(() => {
+    const handleResize = () => {
+      setScreenWidth(window.screen.width);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   return (
    <main>
@@ -75,11 +88,26 @@ Contact        </Navbar.Link>
 
 
 </div> */}
-<div className=" m-2 grid grid-cols-2 gap-4 content-end">
+<MediaQuery minWidth={screenWidth}>
+<div className="m-2 grid grid-cols-4 gap-4 content-end">
 <ExampleChart type="line"/>
 <ToolStatus/>
-
 </div>
+</MediaQuery>
+
+<MediaQuery minWidth={screenWidth / 3 + 1} maxWidth={screenWidth / 2}>
+  <div className="m-2 grid grid-cols-2 gap-4 content-end">
+  <ExampleChart type="line"/>
+  <ToolStatus/>
+  </div>
+</MediaQuery>
+
+<MediaQuery maxWidth={screenWidth / 3}>
+<div className="m-2 grid grid-cols-1 gap-4 content-end">
+<ExampleChart type="line"/>
+<ToolStatus/>
+</div>
+</MediaQuery>
 
 </div>
     
