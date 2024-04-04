@@ -82,27 +82,22 @@ Contact        </Navbar.Link>
       </div>
       </div>
 
-{/* <div className="m-2 grid grid-cols-4 gap-4 content-end">
-<ExampleChart type="line"/>
-<ExampleChart type='bar'/>
 
-
-</div> */}
-<MediaQuery minWidth={screenWidth}>
+<MediaQuery minWidth={1000}>
 <div className="m-2 grid grid-cols-4 gap-4 content-end">
 <ExampleChart type="line"/>
 <ToolStatus/>
 </div>
 </MediaQuery>
 
-<MediaQuery minWidth={screenWidth / 3 + 1} maxWidth={screenWidth / 2}>
+<MediaQuery minWidth={500} maxWidth={999}>
   <div className="m-2 grid grid-cols-2 gap-4 content-end">
   <ExampleChart type="line"/>
   <ToolStatus/>
   </div>
 </MediaQuery>
 
-<MediaQuery maxWidth={screenWidth / 3}>
+<MediaQuery maxWidth={499}>
 <div className="m-2 grid grid-cols-1 gap-4 content-end">
 <ExampleChart type="line"/>
 <ToolStatus/>
