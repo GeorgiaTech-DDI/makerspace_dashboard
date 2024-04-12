@@ -11,6 +11,7 @@ import { IoCalendarNumber } from "react-icons/io5";
 import { FaBeer } from 'react-icons/fa';
 import  { CustomFlowbiteTheme } from 'flowbite-react';
 import ToolStatus from '@/components/toolStatus';
+import TempStatus from '@/components/tempStatus';
 
 
 const customTheme = {
@@ -29,7 +30,7 @@ export default function Home() {
    <main>
      <Navbar className="bg-gt-gold" fluid rounded>
       <Navbar.Brand as={Link} href="https://flowbite-react.com">
-        <img src="https://inventionstudio.gatech.edu/wp-content/uploads/2018/05/Logo_without_Text.png" className="mr-3 h-6 sm:h-9" alt="Flowbite React Logo" />
+        <img src="/favicon.ico" className="mr-3 h-6 sm:h-9" alt="Flowbite React Logo" />
         <span className="self-center whitespace-nowrap text-xl font-semibold text-white">Invention Studio Dashboard</span>
       </Navbar.Brand>
       <Navbar.Toggle />
@@ -76,8 +77,8 @@ Contact        </Navbar.Link>
 
 </div> */}
 <div className=" m-2 grid grid-cols-2 gap-4 content-end">
-<ExampleChart type="line"/>
 <ToolStatus/>
+<TempStatus type="line"/>
 
 </div>
 

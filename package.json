@@ -9,13 +9,14 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "apexcharts": "^3.45.2",
+    "apexcharts": "^3.47.0",
     "flowbite": "^2.2.1",
     "flowbite-react": "^0.7.2",
-    "next": "14.1.0",
-    "react": "^18",
+    "http-proxy-middleware": "^2.0.6",
+    "next": "^14.1.0",
+    "react": "^18.2.0",
     "react-apexcharts": "^1.4.1",
-    "react-dom": "^18",
+    "react-dom": "^18.2.0",
     "react-helmet": "^6.1.0",
     "react-icons": "^5.0.1"
   },
