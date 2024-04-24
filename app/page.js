@@ -1,5 +1,8 @@
 'use client';
 
+
+import Script from 'next/script'
+
 import { Link } from 'next/link';
 import { Navbar } from 'flowbite-react';
 // import ExampleChart from '../components/examplechart'
@@ -9,8 +12,10 @@ import { Dropdown } from 'flowbite-react';
 import { IoCalendarNumber } from "react-icons/io5";
 import { FaBeer } from 'react-icons/fa';
 import  { CustomFlowbiteTheme } from 'flowbite-react';
+import { Datepicker } from "flowbite-react";
 import ToolStatus from '@/components/toolStatus';
 import TempStatus from '@/components/tempStatus';
+import ToolUsage from '@/components/toolusages';
 
 
 const customTheme = {
@@ -24,6 +29,7 @@ const customTheme = {
 export default function Home() {
   return (
    <main>
+    <Script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/datepicker.min.js" />
      <Navbar className="bg-gt-gold" fluid rounded>
       <Navbar.Brand href="https://flowbite-react.com">
         <img src="/favicon.ico" className="mr-3 h-6 sm:h-9" alt="Flowbite React Logo" />
@@ -55,17 +61,15 @@ export default function Home() {
 
     
     <div className='flex flex-row'>
-
-  <Dropdown color="light" label="Update Dashboard" className='rounded-none'>
+    <Datepicker title="Start Date" />
+    <span class="mx-4 center text-gray-500">to</span>
+    <Datepicker title="End Date" />
+<div className='m-2'></div>
+<Dropdown color="light" label="Update Dashboard" className='rounded-none'>
       <Dropdown.Item>Settings</Dropdown.Item>
       <Dropdown.Item>Refresh</Dropdown.Item>
       </Dropdown>
-<div className='m-2'></div>
-      <Dropdown label="Tools" color='light' className='rounded-none'>
-      <Dropdown.Item>Wood Room</Dropdown.Item>
-      <Dropdown.Item>Metal Room</Dropdown.Item>
-      
-      </Dropdown>
+    
       </div>
       </div>
 
@@ -78,6 +82,10 @@ export default function Home() {
 <div className=" m-2 grid grid-cols-2 gap-4 content-end">
 <ToolStatus/>
 <TempStatus type="line"/>
+
+</div>
+<div className=" m-2 grid grid-cols-2 gap-4 content-end">
+<ToolUsage/>
 
 </div>
 
