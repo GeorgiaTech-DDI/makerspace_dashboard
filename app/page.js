@@ -16,7 +16,8 @@ import { Datepicker } from "flowbite-react";
 import ToolStatus from '@/components/toolStatus';
 import TempStatus from '@/components/tempStatus';
 import ToolUsage from '@/components/toolusages';
-
+import MediaQuery from 'react-responsive'
+import React, { useState, useEffect } from 'react';
 
 const customTheme = {
   button: {
@@ -27,6 +28,21 @@ const customTheme = {
 };
 
 export default function Home() {
+
+
+  const [screenWidth, setScreenWidth] = useState(window.screen.width);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setScreenWidth(window.screen.width);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
   return (
    <main>
     <Script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/datepicker.min.js" />
@@ -73,9 +89,20 @@ export default function Home() {
       </div>
       </div>
 
-{/* <div className="m-2 grid grid-cols-4 gap-4 content-end">
+
+<MediaQuery minWidth={1000}>
+<div className="m-2 grid grid-cols-4 gap-4 content-end">
 <ExampleChart type="line"/>
-<ExampleChart type='bar'/>
+<ToolStatus/>
+</div>
+</MediaQuery>
+
+<MediaQuery minWidth={500} maxWidth={999}>
+  <div className="m-2 grid grid-cols-2 gap-4 content-end">
+  <ExampleChart type="line"/>
+  <ToolStatus/>
+  </div>
+</MediaQuery>
 
 
 </div> */}
@@ -87,7 +114,13 @@ export default function Home() {
 <div className=" m-2 grid grid-cols-2 gap-4 content-end">
 <ToolUsage/>
 
+
+<MediaQuery maxWidth={499}>
+<div className="m-2 grid grid-cols-1 gap-4 content-end">
+<ExampleChart type="line"/>
+<ToolStatus/>
 </div>
+</MediaQuery>
 
 </div>
     
