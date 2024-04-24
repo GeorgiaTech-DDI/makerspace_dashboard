@@ -1,9 +1,9 @@
 'use client';
 
 
-import Link from 'next/link';
 import Script from 'next/script'
 
+import { Link } from 'next/link';
 import { Navbar } from 'flowbite-react';
 // import ExampleChart from '../components/examplechart'
 import ExampleHeatMap from "@/components/exampleheatmap";
@@ -27,28 +27,28 @@ const customTheme = {
 };
 
 export default function Home() {
-
-
-
   return (
    <main>
     <Script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/datepicker.min.js" />
      <Navbar className="bg-gt-gold" fluid rounded>
-      <Navbar.Brand as={Link} href="https://flowbite-react.com">
+      <Navbar.Brand href="https://flowbite-react.com">
         <img src="/favicon.ico" className="mr-3 h-6 sm:h-9" alt="Flowbite React Logo" />
         <span className="self-center whitespace-nowrap text-xl font-semibold text-white">Invention Studio Dashboard</span>
       </Navbar.Brand>
       <Navbar.Toggle />
       <Navbar.Collapse>
-        <Navbar.Link href="#" active className="text-white">
+        <Navbar.Link href="/" active className="text-white">
           <span className="text-white">Home</span>
         </Navbar.Link>
-        <Navbar.Link as={Link} href="#">
+        <Navbar.Link href="#">
           About
         </Navbar.Link>
-        <Navbar.Link as={Link} href="#">
-Contact        </Navbar.Link>
-        
+        <Navbar.Link href="#">
+          Contact        
+        </Navbar.Link>
+        <Navbar.Link href="/login">
+          Login
+        </Navbar.Link>
       </Navbar.Collapse>
     </Navbar>
 
@@ -67,7 +67,7 @@ Contact        </Navbar.Link>
 <div className='m-2'></div>
 <Dropdown color="light" label="Update Dashboard" className='rounded-none'>
       <Dropdown.Item>Settings</Dropdown.Item>
-      <Dropdown.Item>Sign out</Dropdown.Item>
+      <Dropdown.Item>Refresh</Dropdown.Item>
       </Dropdown>
     
       </div>
