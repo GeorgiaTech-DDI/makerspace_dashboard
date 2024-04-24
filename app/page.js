@@ -90,35 +90,35 @@ export default function Home() {
       </div>
 
 
-<MediaQuery minWidth={1000}>
+<MediaQuery minWidth={screenWidth}>
 <div className="m-2 grid grid-cols-4 gap-4 content-end">
-<ExampleChart type="line"/>
 <ToolStatus/>
+<TempStatus type="line"/>
 </div>
 </MediaQuery>
 
-<MediaQuery minWidth={500} maxWidth={999}>
+<MediaQuery minWidth={screenWidth / 3 + 1} maxWidth={screenWidth / 2}>
   <div className="m-2 grid grid-cols-2 gap-4 content-end">
-  <ExampleChart type="line"/>
   <ToolStatus/>
+  <TempStatus type="line"/>
   </div>
 </MediaQuery>
 
 
-</div> */}
+{/* </div> 
 <div className=" m-2 grid grid-cols-2 gap-4 content-end">
 <ToolStatus/>
 <TempStatus type="line"/>
 
 </div>
 <div className=" m-2 grid grid-cols-2 gap-4 content-end">
-<ToolUsage/>
+<ToolUsage/> */}
 
 
-<MediaQuery maxWidth={499}>
+<MediaQuery maxWidth={screenWidth / 3}>
 <div className="m-2 grid grid-cols-1 gap-4 content-end">
-<ExampleChart type="line"/>
 <ToolStatus/>
+<TempStatus type="line"/>
 </div>
 </MediaQuery>
 
