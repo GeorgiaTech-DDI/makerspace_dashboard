@@ -65,10 +65,7 @@ export default function Home() {
     <span class="mx-4 center text-gray-500">to</span>
     <Datepicker title="End Date" />
 <div className='m-2'></div>
-<Dropdown color="light" label="Update Dashboard" className='rounded-none'>
-      <Dropdown.Item>Settings</Dropdown.Item>
-      <Dropdown.Item>Refresh</Dropdown.Item>
-      </Dropdown>
+
     
       </div>
       </div>
