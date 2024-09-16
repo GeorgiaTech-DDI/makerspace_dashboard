@@ -3,31 +3,90 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 0, 48, 87;
-  --background-end-rgb: 0, 48, 87;
+  --background: #ffffff; /* White */
+  --foreground: #00254C; /* Georgia Tech Navy */
 }
 
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: light) {
   :root {
-    --foreground-rgb: 0, 0, 0;
-    --background-start-rgb: 0, 48, 87;
-    --background-end-rgb: 0, 48, 87;
+    --background: #00254C; /* Georgia Tech Navy for dark mode */
+    --foreground: #ffffff; /* White for dark mode */
   }
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 220 100% 30%; /* Navy */
+    --card: 0 0% 100%; /* White */
+    --card-foreground: 220 100% 30%; /* Navy */
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 100% 30%;
+    --primary: 45 90% 45%; /* Georgia Tech Gold */
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 100%; /* White */
+    --secondary-foreground: 220 100% 30%; /* Navy */
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 220 50% 50%;
+    --accent: 45 90% 45%; /* Georgia Tech Gold */
+    --accent-foreground: 0 0% 9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 220 100% 30%; /* Navy */
+    --chart-1: 45 90% 45%; /* Gold */
+    --chart-2: 220 100% 30%; /* Navy */
+    --chart-3: 0 0% 100%; /* White */
+    --chart-4: 220 100% 20%;
+    --chart-5: 45 90% 40%;
+    --radius: 0.5rem;
+  }
+  .dark {
+    --background: 220 100% 30%; /* Navy */
+    --foreground: 0 0% 98%; /* White */
+    --card: 220 100% 30%; /* Navy */
+    --card-foreground: 0 0% 98%; /* White */
+    --popover: 220 100% 30%; /* Navy */
+    --popover-foreground: 0 0% 98%; /* White */
+    --primary: 0 0% 98%;
+    --primary-foreground: 45 90% 45%; /* Gold */
+    --secondary: 45 90% 45%; /* Gold */
+    --secondary-foreground: 0 0% 98%;
+    --muted: 220 100% 20%; /* Muted Navy */
+    --muted-foreground: 0 0% 98%;
+    --accent: 45 90% 45%; /* Gold */
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 220 100% 30%; /* Navy */
+    --input: 220 100% 30%; /* Navy */
+    --ring: 220 100% 98%; /* White */
+    --chart-1: 45 90% 45%; /* Gold */
+    --chart-2: 220 100% 30%; /* Navy */
+    --chart-3: 0 0% 98%; /* White */
+    --chart-4: 45 90% 40%; /* Gold */
+    --chart-5: 220 100% 20%; /* Dark Navy */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
   }
 }
