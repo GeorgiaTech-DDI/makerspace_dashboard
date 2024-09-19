@@ -108,7 +108,7 @@ export default function Dashboard() {
         </ResponsiveContainer>
       </div>
 
-  {/* Table */}
+  {/* list view component */}
   <ToolStatusListView/>
 
          </div>
