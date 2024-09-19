@@ -14,6 +14,7 @@ import { Table, TableBody, TableCell, TableHead, TableRow } from "@/components/u
 import { TooltipProvider } from "@radix-ui/react-tooltip"
 import { ArrowUpIcon, ArrowDownIcon, TrendingUpIcon, TrendingDownIcon, Radar } from "lucide-react"
 import MetricCard from "../src/ui/visuals/metric-card"
+import ToolStatusListView from "../src/ui/visuals/list-view-tool-status"
 
 
 
@@ -108,38 +109,9 @@ export default function Dashboard() {
       </div>
 
   {/* Table */}
-  <div className="p-4 border rounded-lg shadow overflow-x-auto">
-    <h3 className="text-lg font-semibold mb-4">Active PIs</h3>
-    <table className="table-auto w-full text-left">
-      <thead>
-        <tr>
-          <th className="px-4 py-2">Name</th>
-          <th className="px-4 py-2">Specialty</th>
-          <th className="px-4 py-2">Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td className="border px-4 py-2">John Doe</td>
-          <td className="border px-4 py-2">CNC</td>
-          <td className="border px-4 py-2">Available</td>
-        </tr>
-        <tr>
-          <td className="border px-4 py-2">Jane Smith</td>
-          <td className="border px-4 py-2">3D Printing</td>
-          <td className="border px-4 py-2">Occupied</td>
-        </tr>
-        <tr>
-          <td className="border px-4 py-2">Sam Johnson</td>
-          <td className="border px-4 py-2">Carpentry</td>
-          <td className="border px-4 py-2">Occupied</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div>
+  <ToolStatusListView/>
 
-         
+         </div>
           </main>
         </div>
       </div>
