@@ -1,23 +1,29 @@
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Triangle, SquareTerminal, Bot, Code2, Book, Settings2, LifeBuoy, SquareUser, BarChart, Home, ChartAreaIcon } from "lucide-react";
+import { redirect } from "next/dist/server/api-utils";
+import Link from "next/link";
 
 const Sidebar = () => {
   return (
     <aside className="inset-y fixed left-0 z-20 flex h-full flex-col border-r">
       <div className="border-b p-2">
+      <Link href="/">
       <Button variant="outline" size="icon" aria-label="Home">
     <Home className="w-5 h-5" />
   </Button>
+  </Link>
       </div>
       <nav className="grid gap-1 p-2">
       
       
         <Tooltip>
           <TooltipTrigger asChild>
+          <Link href="/dashboard">
             <Button variant="ghost" size="icon" className="rounded-lg" aria-label="Settings">
               <ChartAreaIcon className="size-5" />
             </Button>
+            </Link>
           </TooltipTrigger>
           <TooltipContent side="right" sideOffset={5}>
             Dashboard
