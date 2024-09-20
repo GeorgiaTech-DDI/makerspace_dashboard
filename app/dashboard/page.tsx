@@ -13,8 +13,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableRow } from "@/components/ui/table"
 import { TooltipProvider } from "@radix-ui/react-tooltip"
 import { ArrowUpIcon, ArrowDownIcon, TrendingUpIcon, TrendingDownIcon, Radar } from "lucide-react"
-import MetricCard from "../src/ui/visuals/metric-card"
+import MetricCard from "../src/ui/visuals/metric-cards/metric-card"
 import ToolStatusListView from "../src/ui/visuals/list-view-tool-status"
+import IdlePrintersCard from "../src/ui/visuals/metric-cards/idle-printers"
 
 
 
@@ -43,13 +44,6 @@ export default function Dashboard() {
       description: "A significant influx of new students joined the makerspace, driven by campus-wide promotion and introductory workshops.",
       trend: [3, 8, 5, 9, 7, 6, 10, 8] // Randomized trend data
     },
-    {
-      title: "Active PIs (Provisional Instructors)",
-      value: "32",
-      change: "+8%",
-      description: "The number of active provisional instructors has grown due to increased demand for guided projects and workshops.",
-      trend: [4, 5, 6, 8, 7, 9, 6, 4] // Randomized trend data
-    }
   ];
 
   
@@ -80,11 +74,12 @@ export default function Dashboard() {
       <MetricCard
         key={index}
         title={metric.title}
-        value={metric.value}
+        value={parseInt(metric.value)}
         change={metric.change}
         trend={metric.trend} // Example trend data, you can replace with dynamic data
       />
     ))}
+    <IdlePrintersCard/>
             </div>
 
             {/* Second Row: Data graphs with 70% height */}
