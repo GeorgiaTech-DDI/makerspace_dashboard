@@ -1,30 +1,5 @@
 // app/api/printers/route.ts
-import { NextResponse } from 'next/server';
-
-// Function to login and get session
-async function loginAndGetSession() {
-  const loginUrl = "https://cloud.3dprinteros.com/apiglobal/login";
-  const username = "sa-vipvx4@gatech.edu";
-  const password = "u%Ew$6pB!k2cgT";
-
-  const response = await fetch(loginUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: new URLSearchParams({
-      'username': username,
-      'password': password,
-    })
-  });
-
-  const data = await response.json();
-  if (!response.ok) {
-    throw new Error(data.message || 'Authentication failed');
-  }
-
-  return data.message.session;
-}
+import { NextRequest, NextResponse } from 'next/server';
 
 // Function to get organization printers using session
 async function getOrganizationPrinters(session: string) {
@@ -49,11 +24,13 @@ async function getOrganizationPrinters(session: string) {
 }
 
 // GET request handler
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     // Step 1: Authenticate and get session
-    const session = await loginAndGetSession();
-
+    const session = request.headers.get('x-printer-session');
+    if (!session) {
+      throw new Error('Session is not provided');
+    }
     // Step 2: Fetch printers using session
     const printers = await getOrganizationPrinters(session);
 

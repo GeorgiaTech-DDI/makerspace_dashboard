@@ -17,7 +17,7 @@ const PrinterStatusListView = () => {
     // Fetch the printer status data
     const fetchData = async () => {
       try {
-        const response = await fetch('/api/printers');
+        const response = await fetch('/api/3DPOS/printers');
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
