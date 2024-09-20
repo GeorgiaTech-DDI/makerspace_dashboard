@@ -32,3 +32,14 @@ export async function auth3DPOS() {
 
     return data.message.session;
 }
+
+export async function authSUMS() {
+    const egKey = process.env.EG_KEY;
+    const egId = process.env.EG_ID;
+    
+    if (!egKey || !egId) {
+        throw new Error("EG Key or EG ID is not defined in environment variables");
+    }
+    // not really auth but whatever, keep the processes the same for future 
+    return `${egKey}:${egId}`;
+}
