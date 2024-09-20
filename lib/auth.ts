@@ -30,6 +30,21 @@ export async function auth3DPOS() {
     return data.message.session;
 }
 
+export async function checkSession3DPOS(session: string) {
+    const checkSessionUrl = "https://cloud.3dprinteros.com/apiglobal/check_session";
+    const response = await fetch(checkSessionUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+            'session': session,
+        })
+    });
+    const data = await response.json();
+    return data.result;
+}
+
 export async function authSUMS() {
     const egKey = process.env.EG_KEY;
     const egId = process.env.EG_ID;
@@ -37,6 +52,6 @@ export async function authSUMS() {
     if (!egKey || !egId) {
         throw new Error("EG Key or EG ID is not defined in environment variables");
     }
-    // not really auth but whatever, keep the processes the same for future 
+    // not really auth but whatever, keep the processes the same for learning
     return `${egKey}:${egId}`;
 }
