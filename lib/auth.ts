@@ -9,9 +9,6 @@ export async function auth3DPOS() {
 
     password = password.replace(/\\([%$!])/g, '$1'); // Unescape special characters, this is so dumb I hate nextJS
 
-    console.log('Raw username:', username);
-    console.log('Raw password:', password);
-
     const response = await fetch(loginUrl, {
         method: 'POST',
         headers: {
