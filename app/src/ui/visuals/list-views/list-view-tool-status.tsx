@@ -7,21 +7,28 @@ interface ToolStatus {
 
 const ToolStatusListView = () => {
   const [toolStatusData, setToolStatusData] = useState<ToolStatus[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Fetch the tool status data
     const fetchData = async () => {
       try {
-        const response = await fetch('https://sums.gatech.edu/SUMS_React_Shift_Scheduler/rest/EGInfo/ToolStatus?EGKey=***REMOVED***&EGId=8');
+        const response = await fetch('/api/SUMS/toolstatus');
+        if (!response.ok) {
+          throw new Error('Failed to fetch tool status');
+        }
         const data = await response.json();
         setToolStatusData(data);
       } catch (error) {
         console.error('Error fetching tool status data:', error);
+        setError('Failed to load tool status. Please try again later.');
       }
     };
-
     fetchData();
   }, []);
+
+  if (error) {
+    return <div className="p-4 text-red-500">{error}</div>;
+  }
 
   return (
     <div className="p-4 border rounded-lg shadow">
