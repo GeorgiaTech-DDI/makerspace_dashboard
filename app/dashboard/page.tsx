@@ -14,8 +14,9 @@ import { Table, TableBody, TableCell, TableHead, TableRow } from "@/components/u
 import { TooltipProvider } from "@radix-ui/react-tooltip"
 import { ArrowUpIcon, ArrowDownIcon, TrendingUpIcon, TrendingDownIcon, Radar } from "lucide-react"
 import MetricCard from "../src/ui/visuals/metric-cards/metric-card"
-import ToolStatusListView from "../src/ui/visuals/list-view-tool-status"
+import ToolStatusListView from "../src/ui/visuals/list-views/list-view-tool-status"
 import IdlePrintersCard from "../src/ui/visuals/metric-cards/idle-printers"
+import PrinterStatusListView from "../src/ui/visuals/list-views/list-view-printer-status"
 
 
 
@@ -66,50 +67,50 @@ export default function Dashboard() {
           <header className="sticky top-0 z-10 flex h-[57px] items-center gap-1 border-b bg-background px-4">
             <h1 className="text-xl font-semibold">Georgia Tech Invention Studio Dashboard</h1>
           </header>
-
+  
           <main className="flex-1 p-4 space-y-4">
             {/* First Row: Evenly spaced metric cards with 30% height */}
             <div className="grid md:grid-cols-4 gap-4">
-            {metricData.map((metric, index) => (
-      <MetricCard
-        key={index}
-        title={metric.title}
-        value={parseInt(metric.value)}
-        change={metric.change}
-        trend={metric.trend} // Example trend data, you can replace with dynamic data
-      />
-    ))}
-    <IdlePrintersCard/>
+              {metricData.map((metric, index) => (
+                <MetricCard
+                  key={index}
+                  title={metric.title}
+                  value={parseInt(metric.value)}
+                  change={metric.change}
+                  trend={metric.trend}
+                />
+              ))}
+              <IdlePrintersCard />
             </div>
-
-            {/* Second Row: Data graphs with 70% height */}
+  
+            {/* Second Row: List views (ToolStatusListView and PrinterStatusListView) */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-  {/* Graph */}
-  <div className="p-4 border rounded-lg shadow">
-        <h3 className="text-lg font-semibold mb-4">Attendance Over Time</h3>
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={data}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="month" />
-            <YAxis />
-            <Legend />
-            <Line 
-  type="monotone" 
-  dataKey="value" 
-  stroke="#B3A369"  // GT Gold
-  fill="rgba(0, 37, 76, 0.5)"  // GT Navy with opacity
-/>
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
-
-  {/* Table */}
-  <ToolStatusListView/>
-
-         </div>
+              <ToolStatusListView />
+              <PrinterStatusListView />
+            </div>
+  
+            {/* Third Row: Attendance Line Chart */}
+            <div className="p-4 border rounded-lg shadow">
+              <h3 className="text-lg font-semibold mb-4">Attendance Over Time</h3>
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={data}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="month" />
+                  <YAxis />
+                  <Legend />
+                  <Line
+                    type="monotone"
+                    dataKey="value"
+                    stroke="#B3A369" // GT Gold
+                    fill="rgba(0, 37, 76, 0.5)" // GT Navy with opacity
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
           </main>
         </div>
       </div>
     </TooltipProvider>
   )
+  
 }
