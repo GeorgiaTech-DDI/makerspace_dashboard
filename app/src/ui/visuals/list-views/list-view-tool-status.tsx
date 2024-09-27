@@ -25,29 +25,17 @@ const ToolStatusListView = () => {
       setLoading(true);
       setError(null); // reset any previous error
       try {
-        // fetch data from the "tools_url" SUMS API endpoint
-        const response = await fetch(
-          'https://sums.gatech.edu/SUMS_React_Shift_Scheduler/rest/EGInfo/ToolStatus?EGKey=***REMOVED***&EGId=8'
-        );
-
-        // if the response isn't successful (e.g., 404), throw an error
+        const response = await fetch('/api/SUMS/toolstatus');
         if (!response.ok) {
-          throw new Error('Failed to fetch data');
+          throw new Error('Failed to fetch tool status');
         }
-
-        // parse the JSON response and update the tool status state with the data
         const data = await response.json();
         setToolStatusData(data);
       } catch (error) {
-        // if there's an error, set the error state to display it later
-        setError('Error fetching tool status data');
-      } finally {
-        // once the fetch is complete, stop loading
-        setLoading(false);
+        console.error('Error fetching tool status data:', error);
+        setError('Failed to load tool status. Please try again later.');
       }
     };
-
-    // call the fetch function immediately when the component mounts
     fetchData();
   }, []); // the empty array ensures this effect runs only once when the component loads
 

@@ -3,7 +3,7 @@ import { ArrowUpIcon, ArrowDownIcon, TrendingUpIcon } from "lucide-react"
 
 interface MetricCardProps {
   title?: string
-  value?: string
+  value?: number
   change?: string
   trend?: number[]
 }

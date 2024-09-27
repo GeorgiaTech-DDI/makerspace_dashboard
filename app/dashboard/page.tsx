@@ -13,8 +13,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableRow } from "@/components/ui/table"
 import { TooltipProvider } from "@radix-ui/react-tooltip"
 import { ArrowUpIcon, ArrowDownIcon, TrendingUpIcon, TrendingDownIcon, Radar } from "lucide-react"
-import MetricCard from "../src/ui/visuals/metric-card"
-import ToolStatusListView from "../src/ui/visuals/list-view-tool-status"
+import MetricCard from "../src/ui/visuals/metric-cards/metric-card"
+import ToolStatusListView from "../src/ui/visuals/list-views/list-view-tool-status"
+import IdlePrintersCard from "../src/ui/visuals/metric-cards/idle-printers"
+import PrinterStatusListView from "../src/ui/visuals/list-views/list-view-printer-status"
 
 
 
@@ -43,13 +45,6 @@ export default function Dashboard() {
       description: "A significant influx of new students joined the makerspace, driven by campus-wide promotion and introductory workshops.",
       trend: [3, 8, 5, 9, 7, 6, 10, 8] // Randomized trend data
     },
-    {
-      title: "Active PIs (Provisional Instructors)",
-      value: "32",
-      change: "+8%",
-      description: "The number of active provisional instructors has grown due to increased demand for guided projects and workshops.",
-      trend: [4, 5, 6, 8, 7, 9, 6, 4] // Randomized trend data
-    }
   ];
 
   
@@ -72,22 +67,23 @@ export default function Dashboard() {
           <header className="sticky top-0 z-10 flex h-[57px] items-center gap-1 border-b bg-background px-4">
             <h1 className="text-xl font-semibold">Georgia Tech Invention Studio Dashboard</h1>
           </header>
-
+  
           <main className="flex-1 p-4 space-y-4">
             {/* First Row: Evenly spaced metric cards with 30% height */}
             <div className="grid md:grid-cols-4 gap-4">
-            {metricData.map((metric, index) => (
-      <MetricCard
-        key={index}
-        title={metric.title}
-        value={metric.value}
-        change={metric.change}
-        trend={metric.trend} // Example trend data, you can replace with dynamic data
-      />
-    ))}
+              {metricData.map((metric, index) => (
+                <MetricCard
+                  key={index}
+                  title={metric.title}
+                  value={parseInt(metric.value)}
+                  change={metric.change}
+                  trend={metric.trend}
+                />
+              ))}
+              <IdlePrintersCard />
             </div>
-
-            {/* Second Row: Data graphs with 70% height */}
+  
+            {/* Second Row: List views (ToolStatusListView and PrinterStatusListView) */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
   {/* Graph */}
   <div className="p-4 border rounded-lg shadow">
@@ -110,6 +106,7 @@ export default function Dashboard() {
 
   {/* list view component */}
   <ToolStatusListView/>
+  <PrinterStatusListView />
 
          </div>
           </main>
@@ -117,4 +114,5 @@ export default function Dashboard() {
       </div>
     </TooltipProvider>
   )
+  
 }
