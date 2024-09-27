@@ -1,77 +1,111 @@
-// app/api/average-print-time/route.ts
+// app/api/3DPOS/average-print-time/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 
-// Function to get custom report using session
-async function getCustomReport(session: string) {
-  const reportUrl = "https://cloud.3dprinteros.com/apiglobal/get_custom_report";
+type PrinterTimeData = {
+  totalTime: number;
+  count: number;
+  name: string;
+};
 
-  const response = await fetch(reportUrl, {
+async function getCustomReport(session: string, from: string, to: string) {
+  console.log(`Fetching custom report from ${from} to ${to}`);
+  const url = "https://cloud.3dprinteros.com/apiglobal/get_custom_report";
+  
+  const response = await fetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
     body: new URLSearchParams({
       'session': session,
-      'from': '2023-01-01', // Adjust the date range as needed
-      'to': '2024-01-01',
-      'type': 'json', // Request JSON response
-      'all_fields': '1' // Include all fields in the report
+      'from': from,
+      'to': to,
+      'type': 'json',
+      'fields': 'printer_id,printer_name,real_print_time',
+      'all_fields': '0',
     })
   });
 
   const data = await response.json();
-  if (!response.ok) {
+  console.log('API Response:', JSON.stringify(data, null, 2));
+  
+  if (!data.result) {
+    console.error('API Error:', data.message);
     throw new Error(data.message || 'Failed to fetch custom report');
   }
-
   return data.message;
 }
 
-// GET request handler
+function calculateAveragePrintTime(reportData: any[]) {
+  console.log('Calculating average print time');
+  console.log('Report data length:', reportData.length);
+  console.log('First few rows of report data:', reportData.slice(0, 5));
+
+  const printerTimes: { [key: string]: PrinterTimeData } = {};
+
+  // Skip the first two rows (headers and data types)
+  for (let i = 2; i < reportData.length; i++) {
+    const [printerId, printerName, realPrintTime] = reportData[i];
+    console.log(`Processing row ${i}:`, { printerId, printerName, realPrintTime });
+
+    const timeInMinutes = convertToMinutes(realPrintTime);
+
+    if (!printerTimes[printerId]) {
+      printerTimes[printerId] = { totalTime: 0, count: 0, name: printerName };
+    }
+
+    printerTimes[printerId].totalTime += timeInMinutes;
+    printerTimes[printerId].count += 1;
+  }
+
+  console.log('Printer times:', printerTimes);
+
+  return Object.entries(printerTimes).map(([printerId, data]) => ({
+    printerId,
+    printerName: data.name,
+    averagePrintTime: (data.totalTime / data.count).toFixed(2),
+  }));
+}
+
+function convertToMinutes(timeString: string): number {
+  console.log('Converting time string to minutes:', timeString);
+  const [hours, minutes] = timeString.split(':').map(Number);
+  return hours * 60 + minutes;
+}
+
 export async function GET(request: NextRequest) {
+  console.log('Received GET request');
   try {
-    // Step 1: Authenticate and get session from header
     const session = request.headers.get('x-printer-session');
     if (!session) {
+      console.error('Session not provided');
       throw new Error('Session is not provided');
     }
 
-    // Step 2: Fetch custom report data using session
-    const reportData = await getCustomReport(session);
+    const { searchParams } = new URL(request.url);
+    const from = searchParams.get('from') || getDefaultFromDate();
+    const to = searchParams.get('to') || getDefaultToDate();
+    console.log('Date range:', { from, to });
 
-    // Step 3: Calculate average print time per printer
-    const printerTimes: { [key: string]: { name: string, totalPrintTime: number, count: number } } = {};
+    const reportData = await getCustomReport(session, from, to);
+    console.log('Report data received');
 
-    reportData.forEach((entry: any) => {
-      const printerId = entry['Printer ID'];
-      const printerName = entry['Printer Name'];
-      const realPrintTime = parseFloat(entry['Real Print Time']) || 0;
+    const averagePrintTimes = calculateAveragePrintTime(reportData);
+    console.log('Average print times calculated:', averagePrintTimes);
 
-      if (!printerTimes[printerId]) {
-        printerTimes[printerId] = {
-          name: printerName,
-          totalPrintTime: realPrintTime,
-          count: 1
-        };
-      } else {
-        printerTimes[printerId].totalPrintTime += realPrintTime;
-        printerTimes[printerId].count += 1;
-      }
-    });
-
-    // Calculate average print time per printer
-    const averagePrintTimes = Object.keys(printerTimes).map((printerId) => {
-      const { name, totalPrintTime, count } = printerTimes[printerId];
-      return {
-        printerId,
-        printerName: name,
-        averagePrintTime: totalPrintTime / count
-      };
-    });
-
-    // Return the average print times as JSON
     return NextResponse.json(averagePrintTimes);
   } catch (error: any) {
+    console.error('Error in GET request:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
+}
+
+function getDefaultFromDate(): string {
+  const date = new Date();
+  date.setDate(date.getDate() - 31);
+  return date.toISOString().split('T')[0];
+}
+
+function getDefaultToDate(): string {
+  return new Date().toISOString().split('T')[0];
 }
