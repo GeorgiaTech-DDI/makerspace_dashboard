@@ -112,7 +112,6 @@ export default function Dashboard() {
             {/* Fourth Row: Average Print Time Bar Chart */}
             <div className="p-4 border rounded-lg shadow">
               <BarChartAvgPrintTime
-                barColor="#3498db"
               />
             </div>
 
