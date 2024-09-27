@@ -85,28 +85,30 @@ export default function Dashboard() {
   
             {/* Second Row: List views (ToolStatusListView and PrinterStatusListView) */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <ToolStatusListView />
-              <PrinterStatusListView />
-            </div>
-  
-            {/* Third Row: Attendance Line Chart */}
-            <div className="p-4 border rounded-lg shadow">
-              <h3 className="text-lg font-semibold mb-4">Attendance Over Time</h3>
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={data}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" />
-                  <YAxis />
-                  <Legend />
-                  <Line
-                    type="monotone"
-                    dataKey="value"
-                    stroke="#B3A369" // GT Gold
-                    fill="rgba(0, 37, 76, 0.5)" // GT Navy with opacity
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
+  {/* Graph */}
+  <div className="p-4 border rounded-lg shadow">
+        <h3 className="text-lg font-semibold mb-4">Attendance Over Time</h3>
+        <ResponsiveContainer width="100%" height={300}>
+          <LineChart data={data}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="month" />
+            <YAxis />
+            <Legend />
+            <Line 
+  type="monotone" 
+  dataKey="value" 
+  stroke="#B3A369"  // GT Gold
+  fill="rgba(0, 37, 76, 0.5)"  // GT Navy with opacity
+/>
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+
+  {/* list view component */}
+  <ToolStatusListView/>
+  <PrinterStatusListView />
+
+         </div>
           </main>
         </div>
       </div>
