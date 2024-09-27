@@ -182,7 +182,7 @@ export function BarChartAvgPrintTime() {
                 />
               }
             />
-            <Bar dataKey={activeMonth} fill={`var(--color-averagePrintTime)`} />
+            <Bar dataKey={activeMonth} fill="#B3A369"/>
           </BarChart>
         </ChartContainer>
       </CardContent>
