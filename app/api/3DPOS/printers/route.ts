@@ -1,4 +1,4 @@
-// app/api/printers/route.ts
+// app/api/3DPOS/printers/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 
 // Function to get organization printers using session
