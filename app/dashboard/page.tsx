@@ -1,24 +1,10 @@
 "use client"
 
 import Sidebar from "../src/ui/navigation/sidebar"
-import {
-  BarChart, LineChart, PieChart, Bar, Line, Pie, ResponsiveContainer, XAxis, YAxis,
-  RadarChart,
-  PolarGrid,
-  PolarAngleAxis,
-  CartesianGrid,
-  Legend
-} from "recharts"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Table, TableBody, TableCell, TableHead, TableRow } from "@/components/ui/table"
 import { TooltipProvider } from "@radix-ui/react-tooltip"
-import { ArrowUpIcon, ArrowDownIcon, TrendingUpIcon, TrendingDownIcon, Radar } from "lucide-react"
 import MetricCard from "../src/ui/visuals/metric-card"
+import LineChartComponent from '../src/ui/visuals/line-chart';
 import ToolStatusListView from "../src/ui/visuals/list-view-tool-status"
-
-
-
-
 
 export default function Dashboard() {
   const metricData = [
@@ -53,16 +39,30 @@ export default function Dashboard() {
   ];
 
   
-  const data = [
-    { month: 'Jan', value: 65 },
-    { month: 'Feb', value: 59 },
-    { month: 'Mar', value: 80 },
-    { month: 'Apr', value: 81 },
-    { month: 'May', value: 56 },
-    { month: 'Jun', value: 55 },
-    { month: 'Jul', value: 40 },
+  const attendanceData = [
+    { month: 'Jan', attendance: 65 },
+    { month: 'Feb', attendance: 59 },
+    { month: 'Mar', attendance: 80 },
+    { month: 'Apr', attendance: 81 },
+    { month: 'May', attendance: 56 },
+    { month: 'Jun', attendance: 55 },
+    { month: 'Jul', attendance: 40 },
+    { month: 'Aug', attendance: 60 },
+    { month: 'Sep', attendance: 42 },
+    { month: 'Oct', attendance: 56 },
+    { month: 'Nov', attendance: 71 },
+    { month: 'Dec', attendance: 39 },
   ];
-  
+
+  const toolUsageData = [
+    { week: 'Sun', UsageHours: 2 },
+    { week: 'Mon', UsageHours: 4 },
+    { week: 'Tue', UsageHours: 6 },
+    { week: 'Wed', UsageHours: 3 },
+    { week: 'Thu', UsageHours: 8 },
+    { week: 'Fri', UsageHours: 5 },
+    { week: 'Sat', UsageHours: 7 },
+  ];
 
   return (
     <TooltipProvider>
@@ -85,28 +85,28 @@ export default function Dashboard() {
         trend={metric.trend} // Example trend data, you can replace with dynamic data
       />
     ))}
-            </div>
 
-            {/* Second Row: Data graphs with 70% height */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-  {/* Graph */}
-  <div className="p-4 border rounded-lg shadow">
-        <h3 className="text-lg font-semibold mb-4">Attendance Over Time</h3>
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={data}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="month" />
-            <YAxis />
-            <Legend />
-            <Line 
-  type="monotone" 
-  dataKey="value" 
-  stroke="#B3A369"  // GT Gold
-  fill="rgba(0, 37, 76, 0.5)"  // GT Navy with opacity
-/>
-          </LineChart>
-        </ResponsiveContainer>
       </div>
+        {/* Second Row: Data graphs with 70% height */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+      <LineChartComponent
+        title="Attendance Over the Month"
+        data={attendanceData}
+        xAxisKey="month"
+        yAxisKey="attendance"
+        // strokeColor is default to GT Gold
+        // fillColor is default to GT Navy
+      />
+
+      <LineChartComponent
+        title="Tool Usage Over the Week"
+        data={toolUsageData}
+        xAxisKey="week"
+        yAxisKey="UsageHours"
+        // strokeColor is default to GT Gold
+        // fillColor is default to GT Navy
+      />
 
   {/* Table */}
   <ToolStatusListView/>
