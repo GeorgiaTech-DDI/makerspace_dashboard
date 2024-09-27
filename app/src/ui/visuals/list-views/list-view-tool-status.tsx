@@ -34,6 +34,8 @@ const ToolStatusListView = () => {
       } catch (error) {
         console.error('Error fetching tool status data:', error);
         setError('Failed to load tool status. Please try again later.');
+      } finally {
+        setLoading(false); // set loading to false when the data fetch completes
       }
     };
     fetchData();
