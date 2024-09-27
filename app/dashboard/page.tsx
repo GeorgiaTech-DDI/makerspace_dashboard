@@ -17,6 +17,8 @@ import MetricCard from "../src/ui/visuals/metric-cards/metric-card"
 import ToolStatusListView from "../src/ui/visuals/list-views/list-view-tool-status"
 import IdlePrintersCard from "../src/ui/visuals/metric-cards/idle-printers"
 import PrinterStatusListView from "../src/ui/visuals/list-views/list-view-printer-status"
+import BarChartAvgPrintTime from '../src/ui/visuals/bar-chart/bar-chart-avg-print-time'; // Import the updated Bar Chart component
+
 
 
 
@@ -107,6 +109,19 @@ export default function Dashboard() {
                 </LineChart>
               </ResponsiveContainer>
             </div>
+
+
+            {/* Fourth Row: Average Print Time Bar Chart */}
+            <div className="p-4 border rounded-lg shadow">
+              <h3 className="text-lg font-semibold mb-4">Average Print Time per Printer</h3>
+              <BarChartAvgPrintTime
+                title="Average Print Time per Printer"
+                barColor="#3498db" // Customize the bar color
+                width="100%"
+                height={400}
+              />
+            </div>
+            
           </main>
         </div>
       </div>
