@@ -115,7 +115,9 @@ export function BarChartAvgPrintTime() {
 
   const total = React.useMemo(() => {
     return months.reduce((acc, month) => {
-      acc[month] = chartData.reduce((sum, printer) => sum + (printer[month] as number || 0), 0);
+      const monthSum = chartData.reduce((sum, printer) => sum + (printer[month] as number || 0), 0);
+      const printerCount = chartData.filter(printer => printer[month]).length;
+      acc[month] = printerCount > 0 ? (monthSum / printerCount) : 0; // Calculate true average
       return acc;
     }, {} as { [key: string]: number });
   }, [chartData, months]);
@@ -128,7 +130,7 @@ export function BarChartAvgPrintTime() {
     <Card>
       <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
         <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
-          <CardTitle>Average Print Time - Last 3 Months</CardTitle>
+          <CardTitle>Average Print Time - Last 3 Months (minutes) </CardTitle>
           <CardDescription>
             Showing average print times for all printers
           </CardDescription>
