@@ -30,7 +30,32 @@ const ToolStatusListView = () => {
           throw new Error('Failed to fetch tool status');
         }
         const data = await response.json();
-        setToolStatusData(data);
+        // Define lists for filtering
+        const excludeKeywords = ['[TEST]', '[Test]'];
+        const excludeExactNames = [
+          'EcoMake Login',
+          'Hub Login',
+          'Metal Room Login',
+          'Wood Room Login',
+          'Shift Time Clock',
+          'SUMS Environment',
+          'Request Replacement PI',
+          'Test Inventory Tool',
+          'CAE Helpdesk',
+          'SUMS Environment',
+          // Add any other exact names to exclude
+        ];
+
+        // Filter out unwanted entries
+        const filteredData = data.filter((tool) => {
+          const hasExcludedKeyword = excludeKeywords.some((keyword) =>
+            tool.ToolName.includes(keyword)
+          );
+          const isExcludedExactName = excludeExactNames.includes(tool.ToolName);
+          return !hasExcludedKeyword && !isExcludedExactName;
+        });
+
+        setToolStatusData(filteredData);
       } catch (error) {
         console.error('Error fetching tool status data:', error);
         setError('Failed to load tool status. Please try again later.');
