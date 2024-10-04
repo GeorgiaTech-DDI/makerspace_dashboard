@@ -51,11 +51,11 @@ const JobLeaderboardPodium = () => {
               <div
                 key={index}
                 className={cn(
-                  "flex flex-col items-center justify-end p-4 w-40 h-40 rounded-lg shadow-md", // Same size for all
+                  "flex flex-col items-center p-4 w-40 h-40 rounded-lg shadow-md", // Same size for all
                   index === 0 ? "bg-yellow-400" : index === 1 ? "bg-gray-300" : "bg-orange-400" // Color coding
                 )}
               >
-                <p className="text-lg font-bold text-center">
+                <p className="text-lg font-bold text-center mb-auto"> {/* Aligned toward the top */}
                   {index + 1}. {entry.firstname} {entry.lastname}
                 </p>
                 <p className="text-sm font-medium">Jobs: {entry.count}</p>
