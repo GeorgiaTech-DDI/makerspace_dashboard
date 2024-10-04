@@ -17,6 +17,7 @@ import MetricCard from "../src/ui/visuals/metric-cards/metric-card"
 import ToolStatusListView from "../src/ui/visuals/list-views/list-view-tool-status"
 import IdlePrintersCard from "../src/ui/visuals/metric-cards/idle-printers"
 import PrinterStatusListView from "../src/ui/visuals/list-views/list-view-printer-status"
+import JobLeaderboardPodium from "../src/ui/visuals/leaderboard/leaderboard"
 
 
 
@@ -107,6 +108,7 @@ export default function Dashboard() {
   {/* list view component */}
   <ToolStatusListView/>
   <PrinterStatusListView />
+  <JobLeaderboardPodium />
 
          </div>
           </main>
