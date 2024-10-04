@@ -47,43 +47,32 @@ async function getCustomReport(session: string, from: string, to: string) {
     throw new Error(data.message || 'Failed to fetch custom report');
   }
 
+  console.log(data.message);
+
   return data.message;
 }
 
-// Updated function to calculate metrics for a specific period
+// Function to calculate metrics for a specific period
 function calculateMetrics(reportData: any[], period: 'day' | 'week', endDate: Date) {
-  const [headers, types, ...rows] = reportData;
-
+  const [headers, ...rows] = reportData;
   const statusIndex = headers.indexOf('Status');
-  const printDateIndex = headers.indexOf('Print Date/Time');
+  const printDateIndex = headers.indexOf('Started Date/Time');
 
   let totalJobs = 0;
   let completedJobs = 0;
   let cancelledJobs = 0;
-  const jobsByPeriod: { [key: string]: number } = {};
 
   const startDate = period === 'week' ? getStartOfWeek(endDate) : endDate;
-  const periodKey = period === 'week' 
-    ? formatWeek(startDate)
-    : formatDate(startDate);
+  const periodKey = period === 'week' ? formatWeek(startDate) : formatDate(startDate);
 
   rows.forEach(row => {
     const status = row[statusIndex];
     const printDate = new Date(row[printDateIndex]);
 
-    if (period === 'week' && printDate >= startDate && printDate <= endDate) {
+    if ((period === 'week' && printDate >= startDate && printDate <= endDate) || (period === 'day' && formatDate(printDate) === periodKey)) {
       totalJobs++;
       if (status === STATUS_COMPLETED) {
         completedJobs++;
-        jobsByPeriod[periodKey] = (jobsByPeriod[periodKey] || 0) + 1;
-      } else if (status === STATUS_CANCELLED) {
-        cancelledJobs++;
-      }
-    } else if (period === 'day' && formatDate(printDate) === periodKey) {
-      totalJobs++;
-      if (status === STATUS_COMPLETED) {
-        completedJobs++;
-        jobsByPeriod[periodKey] = (jobsByPeriod[periodKey] || 0) + 1;
       } else if (status === STATUS_CANCELLED) {
         cancelledJobs++;
       }
@@ -93,13 +82,28 @@ function calculateMetrics(reportData: any[], period: 'day' | 'week', endDate: Da
   const percentSuccessful = totalJobs > 0 ? (completedJobs / totalJobs) * 100 : 0;
 
   return {
-    period: periodKey,
+    period: formatDate(startDate),
     percentSuccessful: percentSuccessful.toFixed(2) + '%',
     totalJobs,
     completedJobs,
     cancelledJobs,
-    jobsCount: jobsByPeriod[periodKey] || 0
   };
+}
+
+// Helper function to get the last 7 periods (days or weeks)
+function getLast7Periods(period: 'day' | 'week', currentDate: Date) {
+  const periods = [];
+  for (let i = 0; i < 7; i++) {
+    const tempDate = new Date(currentDate);
+    if (period === 'week') {
+      tempDate.setDate(currentDate.getDate() - i * 7); // Go back by 7 days for each week
+      periods.push(formatWeek(getStartOfWeek(tempDate)));
+    } else {
+      tempDate.setDate(currentDate.getDate() - i); // Go back by 1 day for each day
+      periods.push(formatDate(tempDate));
+    }
+  }
+  return periods.reverse();
 }
 
 // GET request handler for the /jobs route
@@ -122,20 +126,26 @@ export async function GET(request: NextRequest) {
       throw new Error('Invalid period parameter. Use "day" or "week"');
     }
 
-    const endDate = new Date(dateParam);
-    if (isNaN(endDate.getTime())) {
+    // Parse the current date from the date parameter
+    const currentDate = new Date(dateParam);
+    if (isNaN(currentDate.getTime())) {
       throw new Error('Invalid date parameter');
     }
 
-    const startDate = periodParam === 'week' ? getStartOfWeek(endDate) : endDate;
-    const from = formatDate(startDate);
-    const to = formatDate(endDate);
+    const periods = getLast7Periods(periodParam as 'day' | 'week', currentDate); // Get the last 7 periods
+    const metricsArray = [];
 
-    const reportData = await getCustomReport(session, from, to);
-    const metrics = calculateMetrics(reportData, periodParam, endDate);
+    // Loop over each period and fetch the report
+    for (const period of periods) {
+      const [from, to] = period.includes('/') ? period.split('/') : [period, period]; // Week ranges or day
+      const reportData = await getCustomReport(session, from, to);
 
-    return NextResponse.json(metrics);
+      // Calculate and store the metrics for this period
+      const metrics = calculateMetrics(reportData, periodParam as 'day' | 'week', new Date(to));
+      metricsArray.push(metrics);
+    }
 
+    return NextResponse.json(metricsArray); // Return an array of metrics for the last 7 periods
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

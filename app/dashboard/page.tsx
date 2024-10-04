@@ -1,63 +1,61 @@
-"use client"
+"use client";
 
-import Sidebar from "../src/ui/navigation/sidebar"
-import {
-  BarChart, LineChart, PieChart, Bar, Line, Pie, ResponsiveContainer, XAxis, YAxis,
-  RadarChart,
-  PolarGrid,
-  PolarAngleAxis,
-  CartesianGrid,
-  Legend
-} from "recharts"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Table, TableBody, TableCell, TableHead, TableRow } from "@/components/ui/table"
-import { TooltipProvider } from "@radix-ui/react-tooltip"
-import { ArrowUpIcon, ArrowDownIcon, TrendingUpIcon, TrendingDownIcon, Radar } from "lucide-react"
-import MetricCard from "../src/ui/visuals/metric-cards/metric-card"
-import ToolStatusListView from "../src/ui/visuals/list-views/list-view-tool-status"
-import IdlePrintersCard from "../src/ui/visuals/metric-cards/idle-printers"
-import PrinterStatusListView from "../src/ui/visuals/list-views/list-view-printer-status"
-
-
-
-
+import { useEffect, useState } from "react";
+import Sidebar from "../src/ui/navigation/sidebar";
+import LineChartComponent from "../src/ui/visuals/line-chart/line-chart"; // Import the LineChartComponent
+import { TooltipProvider } from "@radix-ui/react-tooltip";
+import ToolStatusListView from "../src/ui/visuals/list-views/list-view-tool-status";
+import PrinterStatusListView from "../src/ui/visuals/list-views/list-view-printer-status";
+import MetricCard from "../src/ui/visuals/metric-cards/metric-card";
+import IdlePrintersCard from "../src/ui/visuals/metric-cards/idle-printers";
 
 export default function Dashboard() {
-  const metricData = [
-    {
-      title: "Equipment Usage",
-      value: "85%",
-      change: "-5%",
-      description: "The equipment usage percentage has decreased slightly this month due to scheduled maintenance and equipment upgrades.",
-      trend: [4, 6, 5, 8, 7, 9, 6, 1] // Randomized trend data
-    },
-    {
-      title: "Active Users",
-      value: "580",
-      change: "+12%",
-      description: "The number of active users has increased this month as more students are engaging in projects and workshops.",
-      trend: [5, 7, 6, 10, 8, 9, 11, 11] // Randomized trend data
-    },
-    {
-      title: "New Students",
-      value: "150",
-      change: "+25%",
-      description: "A significant influx of new students joined the makerspace, driven by campus-wide promotion and introductory workshops.",
-      trend: [3, 8, 5, 9, 7, 6, 10, 8] // Randomized trend data
-    },
-  ];
+  const [period, setPeriod] = useState("day"); // Track whether day or week
+  const [dataPoints, setDataPoints] = useState([]); // To store fetched data points
+  const [loading, setLoading] = useState(true); // Track loading
 
-  
-  const data = [
-    { month: 'Jan', value: 65 },
-    { month: 'Feb', value: 59 },
-    { month: 'Mar', value: 80 },
-    { month: 'Apr', value: 81 },
-    { month: 'May', value: 56 },
-    { month: 'Jun', value: 55 },
-    { month: 'Jul', value: 40 },
-  ];
-  
+  // Helper function to get current date in "YYYY-MM-DD" format
+  const getCurrentDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // Month is zero-indexed
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  // Fetch the percent successful data for the last 7 days or weeks
+  useEffect(() => {
+    async function fetchMetrics() {
+      setLoading(true);
+
+      try {
+        const currentDate = getCurrentDate(); // Get the current date
+        const response = await fetch(`/api/3DPOS/jobs?period=${period}&date=${currentDate}`, {
+          method: "GET",
+          headers: {
+            "x-printer-session": "your-session-token-here", // Ensure the correct session token is passed
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch data");
+        }
+
+        const metricsArray = await response.json(); // The array of data points
+        const formattedData = metricsArray.map((item) => ({
+          date: item.period,
+          percentSuccessful: parseFloat(item.percentSuccessful),
+        }));
+        setDataPoints(formattedData); // Save the fetched data to state
+      } catch (error) {
+        console.error("Error fetching metrics:", error);
+      }
+
+      setLoading(false);
+    }
+
+    fetchMetrics();
+  }, [period]); // Re-fetch whenever the period (day/week) changes
 
   return (
     <TooltipProvider>
@@ -67,52 +65,68 @@ export default function Dashboard() {
           <header className="sticky top-0 z-10 flex h-[57px] items-center gap-1 border-b bg-background px-4">
             <h1 className="text-xl font-semibold">Georgia Tech Invention Studio Dashboard</h1>
           </header>
-  
-          <main className="flex-1 p-4 space-y-4">
-            {/* First Row: Evenly spaced metric cards with 30% height */}
-            <div className="grid md:grid-cols-4 gap-4">
-              {metricData.map((metric, index) => (
-                <MetricCard
-                  key={index}
-                  title={metric.title}
-                  value={parseInt(metric.value)}
-                  change={metric.change}
-                  trend={metric.trend}
-                />
-              ))}
-              <IdlePrintersCard />
+
+          {/* First Row: Metric Cards */}
+          <div className="grid md:grid-cols-4 gap-4">
+            <MetricCard
+              title="Equipment Usage"
+              value={85}
+              change="-5%"
+              trend={[4, 6, 5, 8, 7, 9, 6, 1]}
+            />
+            <MetricCard
+              title="Active Users"
+              value={580}
+              change="+12%"
+              trend={[5, 7, 6, 10, 8, 9, 11, 11]}
+            />
+            <MetricCard
+              title="New Students"
+              value={150}
+              change="+25%"
+              trend={[3, 8, 5, 9, 7, 6, 10, 8]}
+            />
+            <IdlePrintersCard />
+          </div>
+
+          {/* Second Row: List views */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <ToolStatusListView />
+            <PrinterStatusListView />
+          </div>
+
+          {/* Third Row: Line Chart for Percent Successful */}
+          <div className="p-4 border rounded-lg shadow">
+            <h3 className="text-lg font-semibold mb-4">
+              Percent Successful over the Last 7 {period === "day" ? "Days" : "Weeks"}
+            </h3>
+
+            {/* Dropdown to switch between days and weeks */}
+            <div className="mb-4">
+              <label className="mr-4">Select Period: </label>
+              <select
+                value={period}
+                onChange={(e) => setPeriod(e.target.value)}
+                className="border p-2 rounded"
+              >
+                <option value="day">Last 7 Days</option>
+                <option value="week">Last 7 Weeks</option>
+              </select>
             </div>
-  
-            {/* Second Row: List views (ToolStatusListView and PrinterStatusListView) */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-  {/* Graph */}
-  <div className="p-4 border rounded-lg shadow">
-        <h3 className="text-lg font-semibold mb-4">Attendance Over Time</h3>
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={data}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="month" />
-            <YAxis />
-            <Legend />
-            <Line 
-  type="monotone" 
-  dataKey="value" 
-  stroke="#B3A369"  // GT Gold
-  fill="rgba(0, 37, 76, 0.5)"  // GT Navy with opacity
-/>
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
 
-  {/* list view component */}
-  <ToolStatusListView/>
-  <PrinterStatusListView />
-
-         </div>
-          </main>
+            {loading ? (
+              <p>Loading...</p>
+            ) : (
+              <LineChartComponent
+                title={`Percent Successful for Last 7 ${period === "day" ? "Days" : "Weeks"}`}
+                data={dataPoints} // The actual data fetched
+                xAxisKey="date" // For days or weeks
+                yAxisKey="percentSuccessful" // For percent success rate
+              />
+            )}
+          </div>    
         </div>
       </div>
     </TooltipProvider>
-  )
-  
+  );
 }
