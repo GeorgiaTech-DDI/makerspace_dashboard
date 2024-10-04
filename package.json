@@ -70,7 +70,10 @@
     "eslint-plugin-jsx-a11y": "^6.10.0",
     "eslint-plugin-react": "^7.37.1",
     "eslint-plugin-react-hooks": "^4.6.2",
+    "flat-cache": "^6.1.0",
+    "glob": "^11.0.0",
     "postcss": "^8",
+    "rimraf": "^6.0.1",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
   }
