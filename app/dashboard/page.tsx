@@ -17,6 +17,7 @@ import MetricCard from "../src/ui/visuals/metric-cards/metric-card"
 import ToolStatusListView from "../src/ui/visuals/list-views/list-view-tool-status"
 import IdlePrintersCard from "../src/ui/visuals/metric-cards/idle-printers"
 import PrinterStatusListView from "../src/ui/visuals/list-views/list-view-printer-status"
+import BarChartAvgPrintTime from  "../src/ui/visuals/bar-charts/bar-chart-avg-print-time"
 
 
 
@@ -85,30 +86,36 @@ export default function Dashboard() {
   
             {/* Second Row: List views (ToolStatusListView and PrinterStatusListView) */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-  {/* Graph */}
-  <div className="p-4 border rounded-lg shadow">
-        <h3 className="text-lg font-semibold mb-4">Attendance Over Time</h3>
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={data}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="month" />
-            <YAxis />
-            <Legend />
-            <Line 
-  type="monotone" 
-  dataKey="value" 
-  stroke="#B3A369"  // GT Gold
-  fill="rgba(0, 37, 76, 0.5)"  // GT Navy with opacity
-/>
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
+              <ToolStatusListView />
+              <PrinterStatusListView />
+            </div>
+  
+            {/* Third Row: Attendance Line Chart */}
+            <div className="p-4 border rounded-lg shadow">
+              <h3 className="text-lg font-semibold mb-4">Attendance Over Time</h3>
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={data}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="month" />
+                  <YAxis />
+                  <Legend />
+                  <Line
+                    type="monotone"
+                    dataKey="value"
+                    stroke="#B3A369" // GT Gold
+                    fill="rgba(0, 37, 76, 0.5)" // GT Navy with opacity
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
 
-  {/* list view component */}
-  <ToolStatusListView/>
-  <PrinterStatusListView />
+            {/* Fourth Row: Average Print Time Bar Chart */}
+            <div className="p-4 border rounded-lg shadow">
+              <BarChartAvgPrintTime
+              />
+            </div>
 
-         </div>
+            
           </main>
         </div>
       </div>
