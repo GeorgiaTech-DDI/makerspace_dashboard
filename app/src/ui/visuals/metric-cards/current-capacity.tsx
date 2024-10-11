@@ -41,7 +41,7 @@ const CurrentCapacity = () => {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Current Capacity</CardTitle>
+          <CardTitle>Current Occupancy</CardTitle>
         </CardHeader>
         <CardContent>
           <p>Loading...</p>
