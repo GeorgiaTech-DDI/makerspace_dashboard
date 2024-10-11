@@ -52,7 +52,7 @@ const JobLeaderboardPodium = () => {
                 key={index}
                 className={cn(
                   "flex flex-col items-center p-4 w-40 h-40 rounded-lg shadow-md", // Same size for all
-                  index === 0 ? "bg-yellow-400" : index === 1 ? "bg-gray-300" : "bg-orange-400" // Color coding
+                  index === 0 ? "bg-yellow-200 text-black" : index === 1 ? "bg-gray-200 text-black" : "bg-orange-200 text-black" // Lighter colors and black text
                 )}
               >
                 <p className="text-lg font-bold text-center mb-auto"> {/* Aligned toward the top */}
