@@ -18,6 +18,7 @@ import ToolStatusListView from "../src/ui/visuals/list-views/list-view-tool-stat
 import IdlePrintersCard from "../src/ui/visuals/metric-cards/idle-printers"
 import PrinterStatusListView from "../src/ui/visuals/list-views/list-view-printer-status"
 import JobLeaderboardPodium from "../src/ui/visuals/leaderboard/leaderboard"
+import PrinterJobCounts from "../src/ui/visuals/job-counts/printerjobcounts"
 
 
 
@@ -109,6 +110,7 @@ export default function Dashboard() {
   <ToolStatusListView/>
   <PrinterStatusListView />
   <JobLeaderboardPodium />
+  <PrinterJobCounts />
 
          </div>
           </main>
