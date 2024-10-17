@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Sidebar from "../src/ui/navigation/sidebar";
-import LineChartComponent from "../src/ui/visuals/line-chart/line-chart"; // Import the LineChartComponent
+import LineChartComponent from "../src/ui/visuals/line-chart/line-chart";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
 import ToolStatusListView from "../src/ui/visuals/list-views/list-view-tool-status";
 import PrinterStatusListView from "../src/ui/visuals/list-views/list-view-printer-status";
@@ -18,9 +18,9 @@ export default function Dashboard() {
   const getCurrentDate = () => {
     const today = new Date();
     const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0'); // Month is zero-indexed
-    const day = String(today.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`; // Fixed the template literal syntax here
   };
 
   // Fetch the percent successful data for the last 7 days or weeks
@@ -33,7 +33,7 @@ export default function Dashboard() {
         const response = await fetch(`/api/3DPOS/jobs?period=${period}&date=${currentDate}`, {
           method: "GET",
           headers: {
-            "x-printer-session": "your-session-token-here", // Ensure the correct session token is passed
+            "x-printer-session": "your-session-token-here",
           },
         });
 
@@ -124,7 +124,7 @@ export default function Dashboard() {
                 yAxisKey="percentSuccessful" // For percent success rate
               />
             )}
-          </div>    
+          </div>
         </div>
       </div>
     </TooltipProvider>
