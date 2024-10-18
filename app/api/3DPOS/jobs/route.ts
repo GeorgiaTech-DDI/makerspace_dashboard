@@ -61,7 +61,7 @@ function calculateMetrics(reportData: any[], period: 'day' | 'week', endDate: Da
   let cancelledJobs = 0;
 
   const startDate = period === 'week' ? getStartOfWeek(endDate) : endDate;
-  const periodKey = period === 'week' ? formatWeek(startDate) : formatDate(startDate);
+  const periodKey = formatDate(startDate);
 
   rows.forEach(row => {
     const status = row[statusIndex];
@@ -80,7 +80,7 @@ function calculateMetrics(reportData: any[], period: 'day' | 'week', endDate: Da
   const percentSuccessful = totalJobs > 0 ? (completedJobs / totalJobs) * 100 : 0;
 
   return {
-    period: formatDate(startDate),
+    period: periodKey,
     percentSuccessful: percentSuccessful.toFixed(2) + '%',
     totalJobs,
     completedJobs,
