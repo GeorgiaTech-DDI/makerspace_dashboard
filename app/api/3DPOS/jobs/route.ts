@@ -1,106 +1,150 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-// Function to fetch printers from the API
-async function getOrganizationPrinters(session: string) {
-  const printerUrl = "https://cloud.3dprinteros.com/apiglobal/get_organization_printers_list";
+// Status constants
+const STATUS_COMPLETED = 'DONE';
+const STATUS_CANCELLED = 'CANCELLED_WEB';
 
-  const response = await fetch(printerUrl, {
+// Helper function to format date as YYYY-MM-DD
+function formatDate(date: Date): string {
+  return date.toISOString().split('T')[0];
+}
+
+// Helper function to get the start of the week for a given date
+function getStartOfWeek(date: Date): Date {
+  const d = new Date(date.getTime());
+  d.setHours(0, 0, 0, 0);
+  d.setDate(d.getDate() - d.getDay()); // Set to previous Sunday
+  return d;
+}
+
+// Helper function to format week as YYYY-MM-DD/YYYY-MM-DD (start date / end date)
+function formatWeek(startDate: Date): string {
+  const endDate = new Date(startDate.getTime());
+  endDate.setDate(endDate.getDate() + 6);
+  return `${formatDate(startDate)}/${formatDate(endDate)}`;
+}
+
+// Function to fetch custom report from the API
+async function getCustomReport(session: string, from: string, to: string) {
+  const reportUrl = "https://cloud.3dprinteros.com/apiglobal/get_custom_report";
+
+  const response = await fetch(reportUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
     body: new URLSearchParams({
       'session': session,
-    })
+      'from': from,
+      'to': to,
+      'type': 'json',
+      'all_fields': '1',
+    }),
   });
 
   const data = await response.json();
-  if (!response.ok) {
-    throw new Error(data.message || 'Failed to fetch printers');
+  if (!response.ok || !data.result) {
+    throw new Error(data.message || 'Failed to fetch custom report');
   }
 
-  return data.message; // Return the list of printers
+  return data.message;
 }
 
-// Function to fetch jobs for a specific printer
-async function getPrinterJobs(session: string, printerId: string) {
-  const jobsUrl = "https://cloud.3dprinteros.com/apiglobal/get_printer_jobs";
+// Function to calculate metrics for a specific period
+function calculateMetrics(reportData: any[], period: 'day' | 'week', endDate: Date) {
+  const [headers, ...rows] = reportData;
+  const statusIndex = headers.indexOf('Status');
+  const printDateIndex = headers.indexOf('Started Date/Time');
 
-  const response = await fetch(jobsUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: new URLSearchParams({
-      'session': session,
-      'printer_id': printerId, // Fetch jobs for specific printer
-    })
+  let totalJobs = 0;
+  let completedJobs = 0;
+  let cancelledJobs = 0;
+
+  const startDate = period === 'week' ? getStartOfWeek(endDate) : endDate;
+  const periodKey = period === 'week' ? formatWeek(startDate) : formatDate(startDate);
+
+  rows.forEach(row => {
+    const status = row[statusIndex];
+    const printDate = new Date(row[printDateIndex]);
+
+    if ((period === 'week' && printDate >= startDate && printDate <= endDate) || (period === 'day' && formatDate(printDate) === periodKey)) {
+      totalJobs++;
+      if (status === STATUS_COMPLETED) {
+        completedJobs++;
+      } else if (status === STATUS_CANCELLED) {
+        cancelledJobs++;
+      }
+    }
   });
 
-  const data = await response.json();
-  if (!response.ok) {
-    throw new Error(data.message || 'Failed to fetch printer jobs');
-  }
+  const percentSuccessful = totalJobs > 0 ? (completedJobs / totalJobs) * 100 : 0;
 
-  return data.message || []; // Return the jobs data or an empty array
+  return {
+    period: formatDate(startDate),
+    percentSuccessful: percentSuccessful.toFixed(2) + '%',
+    totalJobs,
+    completedJobs,
+    cancelledJobs,
+  };
 }
 
-// GET request handler
+// Helper function to get the last 7 periods (days or weeks)
+function getLast7Periods(period: 'day' | 'week', currentDate: Date) {
+  const periods = [];
+  for (let i = 0; i < 7; i++) {
+    const tempDate = new Date(currentDate);
+    if (period === 'week') {
+      tempDate.setDate(currentDate.getDate() - i * 7); // Go back by 7 days for each week
+      periods.push(formatWeek(getStartOfWeek(tempDate)));
+    } else {
+      tempDate.setDate(currentDate.getDate() - i); // Go back by 1 day for each day
+      periods.push(formatDate(tempDate));
+    }
+  }
+  return periods.reverse();
+}
+
+// GET request handler for the /jobs route
 export async function GET(request: NextRequest) {
   try {
-    // Step 1: Get the session from the request headers
     const session = request.headers.get('x-printer-session');
     if (!session) {
       throw new Error('Session is not provided');
     }
 
-    // Step 2: Fetch printers using the session
-    const printers = await getOrganizationPrinters(session); // Now fetching actual printers
+    const searchParams = request.nextUrl.searchParams;
+    const periodParam = searchParams.get('period');
+    const dateParam = searchParams.get('date');
 
-    // Step 3: Initialize variables for job tracking
-    let totalJobs = 0;
-    let successfulJobs = 0;
-    let failedJobs = 0;
-
-    // Step 4: Loop through each printer and fetch its jobs
-    for (const printer of printers) {
-      const printerId = printer.id; // Assuming printers have an ID property
-      const jobs = await getPrinterJobs(session, printerId);
-
-      // Step 5: Process each job if jobs array exists
-      if (Array.isArray(jobs)) {
-        for (const job of jobs) {
-          totalJobs += 1;
-
-          // Count successful jobs (status_id: 77)
-          if (job.status_id === 77) {
-            successfulJobs += 1;
-          }
-
-          // Count failed or aborted jobs (status_id: 43 - failed, 45 - aborted)
-          if ([43, 45].includes(job.status_id)) {
-            failedJobs += 1;
-          }
-        }
-      }
+    if (!periodParam || !dateParam) {
+      throw new Error('Period and date parameters are required');
     }
 
-    // Step 6: Calculate percent successful, handle division by zero case
-    const totalRelevantJobs = successfulJobs + failedJobs;
-    const percentSuccessful = totalRelevantJobs > 0
-      ? (successfulJobs / totalRelevantJobs) * 100
-      : 0;
+    if (periodParam !== 'day' && periodParam !== 'week') {
+      throw new Error('Invalid period parameter. Use "day" or "week"');
+    }
 
-    // Step 7: Return the calculated results with status code 200
-    return NextResponse.json({
-      totalJobs,
-      successfulJobs,
-      failedJobs,
-      percentSuccessful: `${percentSuccessful.toFixed(2)}%`
-    }, { status: 200 });
+    // Parse the current date from the date parameter
+    const currentDate = new Date(dateParam);
+    if (isNaN(currentDate.getTime())) {
+      throw new Error('Invalid date parameter');
+    }
 
+    const periods = getLast7Periods(periodParam as 'day' | 'week', currentDate); // Get the last 7 periods
+    const metricsArray = [];
+
+    // Loop over each period and fetch the report
+    for (const period of periods) {
+      const [from, to] = period.includes('/') ? period.split('/') : [period, period]; // Week ranges or day
+      const reportData = await getCustomReport(session, from, to);
+
+      // Calculate and store the metrics for this period
+      const metrics = calculateMetrics(reportData, periodParam as 'day' | 'week', new Date(to));
+      metricsArray.push(metrics);
+    }
+
+    return NextResponse.json(metricsArray); // Return an array of metrics for the last 7 periods
   } catch (error: any) {
-    // Handle errors and return error message with status 500
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
