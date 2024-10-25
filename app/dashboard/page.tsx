@@ -21,6 +21,7 @@ import CurrentCapacity from "../src/ui/visuals/metric-cards/current-capacity"
 import BarChartAvgPrintTime from  "../src/ui/visuals/bar-charts/bar-chart-avg-print-time"
 import ToolUsageCard from "../src/ui/visuals/metric-cards/tool-usage-card"
 import PercentSuccessfulCard from "./PercentSuccessfulCard"
+import MostCommonReasonCard from "../src/ui/visuals/pie-chart/MostCommonReasonCard"
 
 export default function Dashboard() {
   const metricData = [
@@ -87,13 +88,15 @@ export default function Dashboard() {
               {/* Include CurrentCapacity component */}
               <CurrentCapacity />
 
-
             </div>
   
-            {/* Second Row: List views (ToolStatusListView and PrinterStatusListView) */}
+            {/* Second Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Second Row: List views (ToolStatusListView and PrinterStatusListView) */}
               <ToolStatusListView />
               <PrinterStatusListView />
+              {/* Second Row: Most Common Reasons Card */}
+            <MostCommonReasonCard />
             </div>
   
             {/* Third Row: Attendance Line Chart */}
@@ -122,7 +125,8 @@ export default function Dashboard() {
             </div>
 
             {/* Fifth Row: Percent Successful Card */}
-            <PercentSuccessfulCard />            
+            <PercentSuccessfulCard />
+
           </main>
         </div>
       </div>
