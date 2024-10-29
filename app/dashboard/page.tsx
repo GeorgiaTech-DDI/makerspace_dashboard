@@ -22,7 +22,7 @@ import BarChartAvgPrintTime from  "../src/ui/visuals/bar-charts/bar-chart-avg-pr
 import ToolUsageCard from "../src/ui/visuals/metric-cards/tool-usage-card"
 import PercentSuccessfulCard from "./PercentSuccessfulCard"
 import MostCommonReasonCard from "../src/ui/visuals/pie-chart/MostCommonReasonCard"
-
+import HubLogin from "../src/ui/visuals/metric-cards//hub-login";
 export default function Dashboard() {
   const metricData = [
     {
@@ -87,6 +87,8 @@ export default function Dashboard() {
 
               {/* Include CurrentCapacity component */}
               <CurrentCapacity />
+
+              <HubLogin />
 
             </div>
   
