@@ -7,7 +7,7 @@
   --foreground: #00254C; /* Georgia Tech Navy */
 }
 
-@media (prefers-color-scheme: light) {
+@media (prefers-color-scheme: dark) {
   :root {
     --background: #00254C; /* Georgia Tech Navy for dark mode */
     --foreground: #ffffff; /* White for dark mode */
