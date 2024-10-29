@@ -71,12 +71,12 @@ async function getToolUsages(token: string) {
     }
     
     const data = await response.json();
-    console.log('Successfully parsed response data');
-    console.log('Response structure:', {
-      hasDownList: !!data.DownList,
-      hasUsageList: !!data.UsageList,
-      usageListLength: data.UsageList?.length
-    });
+    // console.log('Successfully parsed response data');
+    // console.log('Response structure:', {
+    //   hasDownList: !!data.DownList,
+    //   hasUsageList: !!data.UsageList,
+    //   usageListLength: data.UsageList?.length
+    // });
     
     return data;
   } catch (error) {
@@ -150,7 +150,7 @@ function getActiveUsers(users: UserSession[] | null | undefined): UserSession[] 
 
 export async function GET(request: NextRequest) {
   try {
-    console.log('Received GET request');
+    // console.log('Received GET request');
     
     const token = request.headers.get('x-sums-token');
     if (!token) {
