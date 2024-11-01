@@ -39,7 +39,8 @@ function aggregateReasons(reportData: any[]) {
   // Skip the first two rows (headers and data types)
   for (let i = 2; i < reportData.length; i++) {
     const row = reportData[i];    
-    const reason = row[19];  // Assuming the reason is in the 20th column (index 19), adjust if needed
+    const reason = row[22];  // Changed from 19 to 22 to get the Feedback column
+    
     if (!reason) {
       continue;
     }
@@ -51,23 +52,25 @@ function aggregateReasons(reportData: any[]) {
     }
     reasons[category].count += 1;
   }
-
+  
   return Object.values(reasons)
     .sort((a, b) => b.count - a.count)
-    .slice(0, 10);  // Return top 10 reasons
+    .slice(0, 10);
 }
 
 function categorizeReason(reason: string): string {
-  // can be adjusted and expanded as needed
-  if (reason.includes('ME 2110')) return 'ME 2110';
-  if (reason.includes('Personal Project')) return 'Personal Project';
-  if (reason.includes('Research Project')) return 'Research Project';
-  if (reason.includes('ME Capstone Project')) return 'ME Capstone Project';
-  if (reason.includes('VIP')) return 'VIP';
-  if (reason.includes('Other Academic Course')) return 'Other Academic Course';
-  if (reason.includes('Project for Club/Lab/Other Org')) return 'Club/Lab/Org Project';
-  if (reason.includes('Training/Studio Improvement')) return 'Training/Studio Improvement';
-  if (reason.includes('ME 1670')) return 'ME 1670';
+  // Strip any trailing semicolons and whitespace
+  const cleanReason = reason.replace(/;+$/, '').trim();
+  
+  if (cleanReason.includes('ME 2110')) return 'ME 2110';
+  if (cleanReason.includes('Personal Project')) return 'Personal Project';
+  if (cleanReason.includes('Research Project')) return 'Research Project';
+  if (cleanReason.includes('ME Capstone Project')) return 'ME Capstone Project';
+  if (cleanReason.includes('VIP')) return 'VIP';
+  if (cleanReason.includes('Other Academic Course')) return 'Other Academic Course';
+  if (cleanReason.includes('Project for Club/Lab/Other Org')) return 'Club/Lab/Org Project';
+  if (cleanReason.includes('Training/Studio Improvement')) return 'Training/Studio Improvement';
+  if (cleanReason.includes('ME 1670')) return 'ME 1670';
   return 'Other';
 }
 
@@ -78,18 +81,24 @@ export async function GET(request: NextRequest) {
       console.error('Session not provided');
       throw new Error('Session is not provided');
     }
-
+    
     const { searchParams } = new URL(request.url);
     const from = searchParams.get('from') || getDefaultFromDate();
     const to = searchParams.get('to') || getDefaultToDate();
-
-    console.log('Fetching report for date range:', from, 'to', to);
+    
+    // Debug: Log exact dates being used
+    console.log('Using date range:', { from, to });
+    
     const reportData = await getCustomReport(session, from, to);
-    console.log('Report data received, rows:', reportData.length);
+    
+    // Debug: Log data structure
+    console.log('Report data structure:', {
+      length: reportData.length,
+      sampleRow: reportData[2],
+      columns: reportData[0]
+    });
     
     const commonReasons = aggregateReasons(reportData);
-    console.log('Common reasons:', commonReasons);
-
     return NextResponse.json(commonReasons);
   } catch (error: any) {
     console.error('Error in GET request:', error);
