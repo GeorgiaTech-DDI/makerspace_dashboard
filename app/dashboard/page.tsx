@@ -119,10 +119,8 @@ export default function Dashboard() {
             </div>
 
             {/* Fourth Row: Average Print Time Bar Chart */}
-            <div className="p-4 border rounded-lg shadow">
-              <BarChartAvgPrintTime
-              />
-            </div>
+            <BarChartAvgPrintTime />
+              
 
             {/* Fifth Row: Percent Successful Card */}
             <PercentSuccessfulCard />

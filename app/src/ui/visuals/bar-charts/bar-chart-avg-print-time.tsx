@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
+import { Loader2 } from "lucide-react"
 
 import {
   Card,
@@ -25,6 +26,7 @@ interface PrinterData {
 
 interface ChartData {
   printerName: string;
+  displayName: string;
   [key: string]: string | number;
 }
 
@@ -34,15 +36,28 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
+const formatPrinterName = (fullName: string): string => {
+  const parts = fullName.split('|');
+  if (parts.length > 1) {
+    return parts[1].trim();
+  }
+  return fullName;
+};
+
 export function BarChartAvgPrintTime() {
   const [chartData, setChartData] = React.useState<ChartData[]>([]);
   const [activeMonth, setActiveMonth] = React.useState<string>("");
   const [months, setMonths] = React.useState<string[]>([]);
   const [error, setError] = React.useState<string | null>(null);
+  const [isLoading, setIsLoading] = React.useState(true);
 
   const fetchData = React.useCallback(async (from: string, to: string) => {
     try {
-      const response = await fetch(`/api/3DPOS/average-print-time?from=${from}&to=${to}`);
+      const response = await fetch(`/api/3DPOS/average-print-time?from=${from}&to=${to}`, {
+        headers: {
+          'x-printer-session': 'YOUR_SESSION_TOKEN', // Replace with your actual session token
+        },
+      });
       if (!response.ok) {
         throw new Error('Failed to fetch average print time data');
       }
@@ -58,15 +73,16 @@ export function BarChartAvgPrintTime() {
   React.useEffect(() => {
     const getLastThreeMonths = () => {
       const result = [];
+      const today = new Date();
       for (let i = 2; i >= 0; i--) {
-        const date = new Date();
-        date.setMonth(date.getMonth() - i);
+        const date = new Date(today.getFullYear(), today.getMonth() - i, 1);
         result.push(date.toISOString().slice(0, 7)); // YYYY-MM format
       }
       return result;
     };
 
     const fetchAllData = async () => {
+      setIsLoading(true);
       const threeMonths = getLastThreeMonths();
       setMonths(threeMonths);
       setActiveMonth(threeMonths[2]); // Set the most recent month as active
@@ -75,49 +91,58 @@ export function BarChartAvgPrintTime() {
 
       for (const month of threeMonths) {
         const fromDate = `${month}-01`;
-        const toDate = new Date(month);
+
+        let toDate = new Date(month);
         toDate.setMonth(toDate.getMonth() + 1);
-        toDate.setDate(0);
+        toDate.setDate(0); // Last day of the month
+
+        // Ensure toDate is not in the future
+        const today = new Date();
+        if (toDate > today) {
+          toDate = today;
+        }
+
         const data = await fetchData(fromDate, toDate.toISOString().slice(0, 10));
         allData[month] = data;
       }
 
-      const combinedData: ChartData[] = allData[threeMonths[0]].map(printer => ({
-        printerName: printer.printerName,
-        [threeMonths[0]]: parseFloat(printer.averagePrintTime),
-        [threeMonths[1]]: 0,
-        [threeMonths[2]]: 0,
-      }));
+      // Combine data from all months
+      const combinedData: ChartData[] = [];
 
-      for (let i = 1; i < 3; i++) {
-        allData[threeMonths[i]].forEach(printer => {
-          const existingPrinter = combinedData.find(p => p.printerName === printer.printerName);
-          if (existingPrinter) {
-            existingPrinter[threeMonths[i]] = parseFloat(printer.averagePrintTime);
-          } else {
-            const newPrinter: ChartData = {
+      threeMonths.forEach((month) => {
+        allData[month].forEach((printer) => {
+          let existingPrinter = combinedData.find((p) => p.printerName === printer.printerName);
+          if (!existingPrinter) {
+            existingPrinter = {
               printerName: printer.printerName,
+              displayName: formatPrinterName(printer.printerName),
               [threeMonths[0]]: 0,
               [threeMonths[1]]: 0,
               [threeMonths[2]]: 0,
             };
-            newPrinter[threeMonths[i]] = parseFloat(printer.averagePrintTime);
-            combinedData.push(newPrinter);
+            combinedData.push(existingPrinter);
           }
+          existingPrinter[month] = parseFloat(printer.averagePrintTime);
         });
-      }
+      });
 
       setChartData(combinedData);
+      setIsLoading(false);
     };
 
     fetchAllData();
   }, [fetchData]);
 
+  const filteredChartData = React.useMemo(() => {
+    return chartData.filter(printer => printer[activeMonth] > 0);
+  }, [chartData, activeMonth]);
+
   const total = React.useMemo(() => {
     return months.reduce((acc, month) => {
-      const monthSum = chartData.reduce((sum, printer) => sum + (printer[month] as number || 0), 0);
-      const printerCount = chartData.filter(printer => printer[month]).length;
-      acc[month] = printerCount > 0 ? (monthSum / printerCount) : 0; // Calculate true average
+      const monthData = chartData.filter((printer) => printer[month] > 0);
+      const monthSum = monthData.reduce((sum, printer) => sum + (printer[month] as number || 0), 0);
+      const printerCount = monthData.length;
+      acc[month] = printerCount > 0 ? (monthSum / printerCount) : 0;
       return acc;
     }, {} as { [key: string]: number });
   }, [chartData, months]);
@@ -130,9 +155,9 @@ export function BarChartAvgPrintTime() {
     <Card>
       <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
         <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
-          <CardTitle>Average Print Time - Last 3 Months (minutes) </CardTitle>
+          <CardTitle>Average Print Time - Last 3 Months (minutes)</CardTitle>
           <CardDescription>
-            Showing average print times for all printers
+            Showing average print times for active printers
           </CardDescription>
         </div>
         <div className="flex">
@@ -154,39 +179,54 @@ export function BarChartAvgPrintTime() {
         </div>
       </CardHeader>
       <CardContent className="px-2 sm:p-6">
-        <ChartContainer
-          config={chartConfig}
-          className="aspect-auto h-[250px] w-full"
-        >
-          <BarChart
-            accessibilityLayer
-            data={chartData}
-            margin={{
-              left: 12,
-              right: 12,
-            }}
+        {isLoading ? (
+          <div className="flex h-[300px] items-center justify-center">
+            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+          </div>
+        ) : (
+          <ChartContainer
+            config={chartConfig}
+            className="aspect-auto h-[300px] w-full"
           >
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="printerName"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-              minTickGap={32}
-              interval={0}
-              tick={{ fontSize: 10, angle: -45, textAnchor: 'end' } as any}
-            />
-            <ChartTooltip
-              content={
-                <ChartTooltipContent
-                  className="w-[150px]"
-                  nameKey="averagePrintTime"
-                />
-              }
-            />
-            <Bar dataKey={activeMonth} fill="#B3A369"/>
-          </BarChart>
-        </ChartContainer>
+            <BarChart
+              data={filteredChartData}
+              margin={{
+                left: 12,
+                right: 12,
+                bottom: 36,
+              }}
+            >
+              <CartesianGrid vertical={false} />
+              <XAxis
+                dataKey="displayName"
+                tickLine={false}
+                axisLine={false}
+                tickMargin={8}
+                minTickGap={32}
+                interval={0}
+                tick={{ fontSize: 10, angle: -45, textAnchor: 'end' } as any}
+              />
+              <ChartTooltip
+                content={({active, payload}) => active && payload?.length ? (
+                  <ChartTooltipContent
+                    className="w-[200px]"
+                    items={[
+                      {
+                        label: "Printer",
+                        value: payload[0].payload.printerName
+                      },
+                      {
+                        label: "Average Print Time",
+                        value: `${payload[0].value} minutes`
+                      }
+                    ]}
+                  />
+                ) : null}
+              />
+              <Bar dataKey={activeMonth} fill="#B3A369" />
+            </BarChart>
+          </ChartContainer>
+        )}
       </CardContent>
     </Card>
   );
