@@ -26,6 +26,8 @@ function getCurrentTime(): Date {
 }
 
 function isWithinOperatingHours(date: Date): boolean {
+  return true; // from feedback, just display hub data
+
   const atlantaDate = new Date(
     date.toLocaleString("en-US", { timeZone: "America/New_York" }),
   );
