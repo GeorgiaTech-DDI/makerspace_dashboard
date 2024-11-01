@@ -3,6 +3,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { Triangle, SquareTerminal, Bot, Code2, Book, Settings2, LifeBuoy, SquareUser, BarChart, Home, ChartAreaIcon } from "lucide-react";
 import { redirect } from "next/dist/server/api-utils";
 import Link from "next/link";
+import { User } from "lucide-react";
 
 const Sidebar = () => {
   return (
@@ -29,6 +30,20 @@ const Sidebar = () => {
             Dashboard
           </TooltipContent>
         </Tooltip>
+
+        {/* PI Dashboard Link */}
+<Tooltip>
+  <TooltipTrigger asChild>
+    <Link href="/pi">
+      <Button variant="ghost" size="icon" className="rounded-lg" aria-label="PI Dashboard">
+        <User className="w-5 h-5" />
+      </Button>
+    </Link>
+  </TooltipTrigger>
+  <TooltipContent side="right" sideOffset={5}>
+    PI Dashboard
+  </TooltipContent>
+</Tooltip>
       </nav>
       <nav className="mt-auto grid gap-1 p-2">
         <Tooltip>
@@ -51,6 +66,10 @@ const Sidebar = () => {
             Account
           </TooltipContent>
         </Tooltip>
+
+        
+
+        
       </nav>
     </aside>
   );
