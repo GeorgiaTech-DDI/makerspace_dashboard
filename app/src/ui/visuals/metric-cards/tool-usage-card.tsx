@@ -78,9 +78,10 @@ const ToolUsageCard = () => {
       </CardHeader>
       <CardContent>
         <div className="space-y-2">
-          <div>
+          {/* for now we're avoiding this */}
+          {/* <div>
             <span className="font-bold">Today:</span> {usageData.dayUsageHours} hours
-          </div>
+          </div> */}
           <div>
             <span className="font-bold">This Week:</span> {usageData.weekUsageHours} hours
           </div>

@@ -1,3 +1,5 @@
+// app/api/SUMS/tool_usages/route.ts
+
 import { NextRequest, NextResponse } from 'next/server';
 
 async function getToolUsages(egKey: string, egId: string, startDate: string, endDate: string) {
@@ -16,9 +18,9 @@ async function getToolUsages(egKey: string, egId: string, startDate: string, end
 }
 
 function formatDate(date: Date): string {
-  const year = date.getUTCFullYear();
-  const month = ('0' + (date.getUTCMonth() + 1)).slice(-2);
-  const day = ('0' + date.getUTCDate()).slice(-2);
+  const year = date.getFullYear();
+  const month = ('0' + (date.getMonth() + 1)).slice(-2);
+  const day = ('0' + date.getDate()).slice(-2);
 
   return `${year}-${month}-${day}`;
 }
@@ -36,15 +38,23 @@ export async function GET(request: NextRequest) {
     // Get today's date
     const today = new Date();
 
-    // Calculate dates for day, week, and month
-    const dayStartDate = formatDate(today);
-    const dayEndDate = formatDate(today);
+    // Adjust "today" to yesterday
+    const adjustedToday = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1);
 
-    const weekStartDate = formatDate(new Date(today.getFullYear(), today.getMonth(), today.getDate() - 6));
-    const weekEndDate = formatDate(today);
+    // Use adjustedToday for day usage
+    const dayStartDate = formatDate(adjustedToday);
+    const dayEndDate = formatDate(adjustedToday);
 
-    const monthStartDate = formatDate(new Date(today.getFullYear(), today.getMonth(), 1));
-    const monthEndDate = formatDate(today);
+    console.log(`Adjusted Day Start Date: ${dayStartDate}, Day End Date: ${dayEndDate}`);
+
+    // Week and month calculations remain the same
+    const weekStart = new Date(adjustedToday.getFullYear(), adjustedToday.getMonth(), adjustedToday.getDate() - 6);
+    const weekStartDate = formatDate(weekStart);
+    const weekEndDate = formatDate(adjustedToday);
+
+    const monthStart = new Date(adjustedToday.getFullYear(), adjustedToday.getMonth(), 1);
+    const monthStartDate = formatDate(monthStart);
+    const monthEndDate = formatDate(adjustedToday);
 
     // Fetch data for each period
     const [dayData, weekData, monthData] = await Promise.all([
@@ -55,7 +65,7 @@ export async function GET(request: NextRequest) {
 
     // Function to aggregate usage hours
     function aggregateUsageHours(data: any[]): number {
-      // Exclude "Hub Login" and non-tool items
+      // Exclude non-tool items
       const excludeTools = [
         'Hub Login',
         'EcoMake Login',
@@ -67,7 +77,6 @@ export async function GET(request: NextRequest) {
         'Test Inventory Tool',
         'CAE Helpdesk',
         'SUMS Environment',
-        // Add any other non-tool items to exclude
       ];
 
       // Filter out excluded tools
