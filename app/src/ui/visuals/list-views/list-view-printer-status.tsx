@@ -35,7 +35,7 @@ const PrinterStatusListView = () => {
 
   return (
     <div className="p-4 border rounded-lg shadow">
-      <h3 className="text-lg font-semibold mb-4 sticky top-0 bg-white z-10">
+      <h3 className="text-lg font-semibold mb-4 top-0 bg-white z-10">
         Printer Status
       </h3>
       <div className="max-h-96 overflow-y-auto">
