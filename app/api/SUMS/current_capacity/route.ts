@@ -37,7 +37,7 @@ function isWithinOperatingHours(date: Date): boolean {
 
   if (day === 0 || day === 6) return false;
 
-  if (timeAsDecimal >= 10 && timeAsDecimal <= 17) return true;
+  if (timeAsDecimal >= 9 && timeAsDecimal <= 18) return true;
 
   if (day >= 1 && day <= 4 && timeAsDecimal >= 17 && timeAsDecimal <= 19)
     return true;
