@@ -1,3 +1,5 @@
+// components/bar-charts/bar-chart-avg-print-time.tsx
+
 "use client"
 
 import * as React from "react"
@@ -42,7 +44,11 @@ export function BarChartAvgPrintTime() {
 
   const fetchData = React.useCallback(async (from: string, to: string) => {
     try {
-      const response = await fetch(`/api/3DPOS/average-print-time?from=${from}&to=${to}`);
+      const response = await fetch(`/api/3DPOS/average-print-time?from=${from}&to=${to}`, {
+        headers: {
+          'x-printer-session': 'YOUR_SESSION_TOKEN', // Replace with your actual session token
+        },
+      });
       if (!response.ok) {
         throw new Error('Failed to fetch average print time data');
       }
@@ -58,9 +64,9 @@ export function BarChartAvgPrintTime() {
   React.useEffect(() => {
     const getLastThreeMonths = () => {
       const result = [];
+      const today = new Date();
       for (let i = 2; i >= 0; i--) {
-        const date = new Date();
-        date.setMonth(date.getMonth() - i);
+        const date = new Date(today.getFullYear(), today.getMonth() - i, 1);
         result.push(date.toISOString().slice(0, 7)); // YYYY-MM format
       }
       return result;
@@ -75,37 +81,39 @@ export function BarChartAvgPrintTime() {
 
       for (const month of threeMonths) {
         const fromDate = `${month}-01`;
-        const toDate = new Date(month);
+
+        let toDate = new Date(month);
         toDate.setMonth(toDate.getMonth() + 1);
-        toDate.setDate(0);
+        toDate.setDate(0); // Last day of the month
+
+        // Ensure toDate is not in the future
+        const today = new Date();
+        if (toDate > today) {
+          toDate = today;
+        }
+
         const data = await fetchData(fromDate, toDate.toISOString().slice(0, 10));
         allData[month] = data;
       }
 
-      const combinedData: ChartData[] = allData[threeMonths[0]].map(printer => ({
-        printerName: printer.printerName,
-        [threeMonths[0]]: parseFloat(printer.averagePrintTime),
-        [threeMonths[1]]: 0,
-        [threeMonths[2]]: 0,
-      }));
+      // Combine data from all months
+      const combinedData: ChartData[] = [];
 
-      for (let i = 1; i < 3; i++) {
-        allData[threeMonths[i]].forEach(printer => {
-          const existingPrinter = combinedData.find(p => p.printerName === printer.printerName);
-          if (existingPrinter) {
-            existingPrinter[threeMonths[i]] = parseFloat(printer.averagePrintTime);
-          } else {
-            const newPrinter: ChartData = {
+      threeMonths.forEach((month) => {
+        allData[month].forEach((printer) => {
+          let existingPrinter = combinedData.find((p) => p.printerName === printer.printerName);
+          if (!existingPrinter) {
+            existingPrinter = {
               printerName: printer.printerName,
               [threeMonths[0]]: 0,
               [threeMonths[1]]: 0,
               [threeMonths[2]]: 0,
             };
-            newPrinter[threeMonths[i]] = parseFloat(printer.averagePrintTime);
-            combinedData.push(newPrinter);
+            combinedData.push(existingPrinter);
           }
+          existingPrinter[month] = parseFloat(printer.averagePrintTime);
         });
-      }
+      });
 
       setChartData(combinedData);
     };
@@ -115,9 +123,10 @@ export function BarChartAvgPrintTime() {
 
   const total = React.useMemo(() => {
     return months.reduce((acc, month) => {
-      const monthSum = chartData.reduce((sum, printer) => sum + (printer[month] as number || 0), 0);
-      const printerCount = chartData.filter(printer => printer[month]).length;
-      acc[month] = printerCount > 0 ? (monthSum / printerCount) : 0; // Calculate true average
+      const monthData = chartData.filter((printer) => printer[month]);
+      const monthSum = monthData.reduce((sum, printer) => sum + (printer[month] as number || 0), 0);
+      const printerCount = monthData.length;
+      acc[month] = printerCount > 0 ? (monthSum / printerCount) : 0;
       return acc;
     }, {} as { [key: string]: number });
   }, [chartData, months]);
@@ -130,7 +139,7 @@ export function BarChartAvgPrintTime() {
     <Card>
       <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
         <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
-          <CardTitle>Average Print Time - Last 3 Months (minutes) </CardTitle>
+          <CardTitle>Average Print Time - Last 3 Months (minutes)</CardTitle>
           <CardDescription>
             Showing average print times for all printers
           </CardDescription>
@@ -159,7 +168,6 @@ export function BarChartAvgPrintTime() {
           className="aspect-auto h-[250px] w-full"
         >
           <BarChart
-            accessibilityLayer
             data={chartData}
             margin={{
               left: 12,
@@ -184,7 +192,7 @@ export function BarChartAvgPrintTime() {
                 />
               }
             />
-            <Bar dataKey={activeMonth} fill="#B3A369"/>
+            <Bar dataKey={activeMonth} fill="#B3A369" />
           </BarChart>
         </ChartContainer>
       </CardContent>
