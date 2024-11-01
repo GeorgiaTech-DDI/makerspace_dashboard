@@ -17,11 +17,16 @@ import MetricCard from "../src/ui/visuals/metric-cards/metric-card"
 import ToolStatusListView from "../src/ui/visuals/list-views/list-view-tool-status"
 import IdlePrintersCard from "../src/ui/visuals/metric-cards/idle-printers"
 import PrinterStatusListView from "../src/ui/visuals/list-views/list-view-printer-status"
+import JobLeaderboardPodium from "../src/ui/visuals/leaderboard/leaderboard"
+import PrinterJobCounts from "../src/ui/visuals/job-counts/printerjobcounts"
 import CurrentCapacity from "../src/ui/visuals/metric-cards/current-capacity"
-import BarChartAvgPrintTime from  "../src/ui/visuals/bar-charts/bar-chart-avg-print-time"
+import BarChartAvgPrintTime from "../src/ui/visuals/bar-charts/bar-chart-avg-print-time"
 import ToolUsageCard from "../src/ui/visuals/metric-cards/tool-usage-card"
 import PercentSuccessfulCard from "./PercentSuccessfulCard"
 import MostCommonReasonCard from "../src/ui/visuals/pie-chart/MostCommonReasonCard"
+
+
+
 
 export default function Dashboard() {
   const metricData = [
@@ -95,6 +100,8 @@ export default function Dashboard() {
               {/* Second Row: List views (ToolStatusListView and PrinterStatusListView) */}
               <ToolStatusListView />
               <PrinterStatusListView />
+              <JobLeaderboardPodium />
+              <PrinterJobCounts />
               {/* Second Row: Most Common Reasons Card */}
             <MostCommonReasonCard />
             </div>
