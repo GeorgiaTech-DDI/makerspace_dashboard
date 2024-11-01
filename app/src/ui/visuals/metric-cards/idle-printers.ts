@@ -1,3 +1,5 @@
+// removing , doesn't work
+
 import { useEffect, useState } from "react";
 
 // Assuming MetricCard is imported correctly
@@ -16,7 +18,9 @@ export default function IdlePrintersCard() {
         const data = await response.json();
 
         // Filter out idle printers
-        const idlePrinters = data.filter((printer: any) => printer.state === "idle");
+        const idlePrinters = data.filter(
+          (printer: any) => printer.state === "idle",
+        );
         setIdleCount(idlePrinters.length);
       } catch (error) {
         console.error("Failed to fetch printers", error);
@@ -27,13 +31,10 @@ export default function IdlePrintersCard() {
   }, []);
 
   // Render your MetricCard with idle printer count
-  return(
-
-MetricCard({
-    title:"Available Printers",
-    value:idleCount,
-    change:change,
-    trend:trend })
-)
-  
+  return MetricCard({
+    title: "Available Printers",
+    value: idleCount,
+    change: change,
+    trend: trend,
+  });
 }

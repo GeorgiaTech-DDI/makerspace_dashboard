@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { TrendingUpIcon, TrendingDownIcon } from 'lucide-react';
+import { useEffect, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { TrendingUpIcon, TrendingDownIcon } from "lucide-react";
 
 const CurrentCapacity = () => {
   const [capacity, setCapacity] = useState<number | null>(null);
@@ -13,17 +13,17 @@ const CurrentCapacity = () => {
       setError(null);
 
       try {
-        const response = await fetch('/api/SUMS/current_capacity');
+        const response = await fetch("/api/SUMS/current_capacity");
 
         if (!response.ok) {
-          throw new Error('Failed to fetch current capacity');
+          throw new Error("Failed to fetch current capacity");
         }
 
         const data = await response.json();
         setCapacity(data.current_capacity);
       } catch (error) {
-        console.error('Error fetching current capacity:', error);
-        setError('Failed to load current capacity. Please try again later.');
+        console.error("Error fetching current capacity:", error);
+        setError("Failed to load current capacity. Please try again later.");
       } finally {
         setLoading(false);
       }

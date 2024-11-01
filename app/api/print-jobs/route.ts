@@ -61,7 +61,7 @@ export async function GET(request: NextRequest) {
         session,
         parseInt(printerID),
         parseInt(limit),
-        parseInt(offset)
+        parseInt(offset),
       );
       printerJobStatusMap[printerID] = jobCounts;
     }

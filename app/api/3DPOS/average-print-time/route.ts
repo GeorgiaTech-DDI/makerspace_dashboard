@@ -1,6 +1,6 @@
 // app/api/3DPOS/average-print-time/route.ts
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
 
 type PrinterTimeData = {
   totalTime: number;
@@ -12,18 +12,18 @@ async function getCustomReport(session: string, from: string, to: string) {
   const url = "https://cloud.3dprinteros.com/apiglobal/get_custom_report";
 
   const response = await fetch(url, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
+      "Content-Type": "application/x-www-form-urlencoded",
     },
     body: new URLSearchParams({
-      'session': session,
-      'from': from,
-      'to': to,
-      'type': 'json',
-      'fields': 'printer_id,printer_name,real_print_time',
-      'all_fields': '0',
-    })
+      session: session,
+      from: from,
+      to: to,
+      type: "json",
+      fields: "printer_id,printer_name,real_print_time",
+      all_fields: "0",
+    }),
   });
 
   const data = await response.json();
@@ -32,8 +32,8 @@ async function getCustomReport(session: string, from: string, to: string) {
   console.log(`Data fetched for ${from} to ${to}:`, data);
 
   if (!data.result) {
-    console.error('API Error:', data.message);
-    throw new Error(data.message || 'Failed to fetch custom report');
+    console.error("API Error:", data.message);
+    throw new Error(data.message || "Failed to fetch custom report");
   }
   return data.message;
 }
@@ -53,8 +53,8 @@ function calculateAveragePrintTime(reportData: any[]) {
     "UMS3 UPLOADS",
     "UMS5 IN PERSON QUEUE",
     "BAMBULABS IN-PERSON QUEUE",
-    "BAMBU LAB X1E FILE LIBRARY (Upload Here)"
-  ].map(name => name.trim().toLowerCase());
+    "BAMBU LAB X1E FILE LIBRARY (Upload Here)",
+  ].map((name) => name.trim().toLowerCase());
 
   // Skip the first two rows (headers and data types)
   for (let i = 2; i < reportData.length; i++) {
@@ -64,8 +64,8 @@ function calculateAveragePrintTime(reportData: any[]) {
     const cleanedPrinterName = printerName.trim().toLowerCase();
 
     // Skip the printer if its name includes any of the excluded names
-    const isExcluded = excludedPrinters.some(excludedName =>
-      cleanedPrinterName.includes(excludedName)
+    const isExcluded = excludedPrinters.some((excludedName) =>
+      cleanedPrinterName.includes(excludedName),
     );
 
     if (isExcluded) {
@@ -90,21 +90,21 @@ function calculateAveragePrintTime(reportData: any[]) {
 }
 
 function convertToMinutes(timeString: string): number {
-  const [hours, minutes] = timeString.split(':').map(Number);
+  const [hours, minutes] = timeString.split(":").map(Number);
   return hours * 60 + minutes;
 }
 
 export async function GET(request: NextRequest) {
   try {
-    const session = request.headers.get('x-printer-session');
+    const session = request.headers.get("x-printer-session");
     if (!session) {
-      console.error('Session not provided');
-      throw new Error('Session is not provided');
+      console.error("Session not provided");
+      throw new Error("Session is not provided");
     }
 
     const { searchParams } = new URL(request.url);
-    const from = searchParams.get('from') || getDefaultFromDate();
-    const to = searchParams.get('to') || getDefaultToDate();
+    const from = searchParams.get("from") || getDefaultFromDate();
+    const to = searchParams.get("to") || getDefaultToDate();
 
     const reportData = await getCustomReport(session, from, to);
 
@@ -112,7 +112,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(averagePrintTimes);
   } catch (error: any) {
-    console.error('Error in GET request:', error);
+    console.error("Error in GET request:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
@@ -120,9 +120,9 @@ export async function GET(request: NextRequest) {
 function getDefaultFromDate(): string {
   const date = new Date();
   date.setDate(date.getDate() - 31);
-  return date.toISOString().split('T')[0];
+  return date.toISOString().split("T")[0];
 }
 
 function getDefaultToDate(): string {
-  return new Date().toISOString().split('T')[0];
+  return new Date().toISOString().split("T")[0];
 }
