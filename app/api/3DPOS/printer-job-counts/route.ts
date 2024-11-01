@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getOrganizationPrinters } from "../printers/route";
 
-async function getPrinterJobCounts(
+export async function getPrinterJobCounts(
   session: string,
   printer_id: number,
   limit = 20,

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { cn } from "@/lib/utils"; // Utility for joining class names
+import { cn } from "@/lib/utils";
 
 interface LeaderboardEntry {
   email: string;
@@ -25,7 +25,11 @@ const JobLeaderboardPodium = () => {
         }
 
         const data = await response.json();
-        setLeaderboardData(data.leaderboard);
+        // Filter out entries with empty names before setting the state
+        const validEntries = data.leaderboard.filter(
+          (entry: LeaderboardEntry) => entry.firstname.trim() && entry.lastname.trim()
+        );
+        setLeaderboardData(validEntries);
       } catch (err: any) {
         setError(err.message || 'Unknown error');
       }
@@ -34,7 +38,7 @@ const JobLeaderboardPodium = () => {
     fetchData();
   }, []);
 
-  // Separate top 3 for podium and the rest for the regular list
+  // Get valid top entries and others
   const topThree = leaderboardData.slice(0, 3);
   const others = leaderboardData.slice(3);
 
@@ -49,13 +53,15 @@ const JobLeaderboardPodium = () => {
           <div className="flex justify-center space-x-4 mb-8">
             {topThree.map((entry, index) => (
               <div
-                key={index}
+                key={entry.email}
                 className={cn(
-                  "flex flex-col items-center p-4 w-40 h-40 rounded-lg shadow-md", // Same size for all
-                  index === 0 ? "bg-yellow-200 text-black" : index === 1 ? "bg-gray-200 text-black" : "bg-orange-200 text-black" // Lighter colors and black text
+                  "flex flex-col items-center p-4 w-40 h-40 rounded-lg shadow-md",
+                  index === 0 ? "bg-yellow-200 text-black" : 
+                  index === 1 ? "bg-gray-200 text-black" : 
+                  "bg-orange-200 text-black"
                 )}
               >
-                <p className="text-lg font-bold text-center mb-auto"> {/* Aligned toward the top */}
+                <p className="text-lg font-bold text-center mb-auto">
                   {index + 1}. {entry.firstname} {entry.lastname}
                 </p>
                 <p className="text-sm font-medium">Jobs: {entry.count}</p>
@@ -66,7 +72,10 @@ const JobLeaderboardPodium = () => {
           {/* Regular Leaderboard for Others */}
           <div className="grid grid-cols-1 gap-4">
             {others.map((entry, index) => (
-              <Card key={index + 3} className="p-4 shadow-md border flex justify-between items-center">
+              <Card 
+                key={entry.email} 
+                className="p-4 shadow-md border flex justify-between items-center"
+              >
                 <CardHeader>
                   <CardTitle>
                     {index + 4}. {entry.firstname} {entry.lastname}
