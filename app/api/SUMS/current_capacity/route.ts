@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
 
 async function getToolStatus(egKey: string, egId: string) {
   const toolStatusUrl = `https://sums.gatech.edu/SUMS_React_Shift_Scheduler/rest/EGInfo/ToolStatus?EGKey=${egKey}&EGId=${egId}`;
@@ -6,7 +6,7 @@ async function getToolStatus(egKey: string, egId: string) {
   const response = await fetch(toolStatusUrl);
 
   if (!response.ok) {
-    throw new Error('Failed to fetch tool status');
+    throw new Error("Failed to fetch tool status");
   }
 
   return response.json();
@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
     const egId = process.env.EG_ID;
 
     if (!egKey || !egId) {
-      throw new Error('EGKey or EGId is not provided');
+      throw new Error("EGKey or EGId is not provided");
     }
 
     // Step 2: Fetch tool status using EGKey and EGId
@@ -27,11 +27,11 @@ export async function GET(request: NextRequest) {
 
     // Step 3: Find the 'Hub Login' tool in the tool status data
     const hubLoginTool = toolStatus.find(
-      (tool: any) => tool.ToolName === 'Hub Login'
+      (tool: any) => tool.ToolName === "Hub Login",
     );
 
     if (!hubLoginTool) {
-      throw new Error('Hub Login tool not found in tool status');
+      throw new Error("Hub Login tool not found in tool status");
     }
 
     // Step 4: Extract the number of users from the 'Status' field

@@ -4,12 +4,12 @@
 
 :root {
   --background: #ffffff; /* White */
-  --foreground: #00254C; /* Georgia Tech Navy */
+  --foreground: #00254c; /* Georgia Tech Navy */
 }
 
 @media (prefers-color-scheme: light) {
   :root {
-    --background: #00254C; /* Georgia Tech Navy for dark mode */
+    --background: #00254c; /* Georgia Tech Navy for dark mode */
     --foreground: #ffffff; /* White for dark mode */
   }
 }

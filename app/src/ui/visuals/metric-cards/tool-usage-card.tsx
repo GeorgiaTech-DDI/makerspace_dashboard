@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useEffect, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface UsageData {
   dayUsageHours: string;
@@ -18,18 +18,18 @@ const ToolUsageCard = () => {
       setError(null);
 
       try {
-        const response = await fetch('/api/SUMS/tool_usages');
+        const response = await fetch("/api/SUMS/tool_usages");
 
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.error || 'Failed to fetch tool usage data');
+          throw new Error(errorData.error || "Failed to fetch tool usage data");
         }
 
         const data = await response.json();
         setUsageData(data);
       } catch (error: any) {
-        console.error('Error fetching tool usage data:', error);
-        setError('Failed to load tool usage data. Please try again later.');
+        console.error("Error fetching tool usage data:", error);
+        setError("Failed to load tool usage data. Please try again later.");
       } finally {
         setLoading(false);
       }
@@ -64,7 +64,7 @@ const ToolUsageCard = () => {
         </CardHeader>
         <CardContent>
           <p className="text-red-500">
-            {error || 'No usage data available for the selected date range.'}
+            {error || "No usage data available for the selected date range."}
           </p>
         </CardContent>
       </Card>
@@ -79,13 +79,16 @@ const ToolUsageCard = () => {
       <CardContent>
         <div className="space-y-2">
           <div>
-            <span className="font-bold">Today:</span> {usageData.dayUsageHours} hours
+            <span className="font-bold">Today:</span> {usageData.dayUsageHours}{" "}
+            hours
           </div>
           <div>
-            <span className="font-bold">This Week:</span> {usageData.weekUsageHours} hours
+            <span className="font-bold">This Week:</span>{" "}
+            {usageData.weekUsageHours} hours
           </div>
           <div>
-            <span className="font-bold">This Month:</span> {usageData.monthUsageHours} hours
+            <span className="font-bold">This Month:</span>{" "}
+            {usageData.monthUsageHours} hours
           </div>
         </div>
       </CardContent>

@@ -5,7 +5,7 @@ async function getPrinterJobCounts(
   session: string,
   printer_id: number,
   limit = 20,
-  offset = 0
+  offset = 0,
 ) {
   const printJobsUrl =
     "https://cloud.3dprinteros.com/apiglobal/get_printer_jobs";
@@ -77,7 +77,7 @@ export async function GET(request: NextRequest) {
         session,
         parseInt(printerID),
         parseInt(limit),
-        parseInt(offset)
+        parseInt(offset),
       );
       printerJobStatusMap[printerID] = jobCounts;
     }

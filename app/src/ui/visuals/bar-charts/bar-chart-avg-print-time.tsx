@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
+import * as React from "react";
+import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 
 import {
   Card,
@@ -9,13 +9,13 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
+} from "@/components/ui/chart";
 
 interface PrinterData {
   printerId: string;
@@ -32,7 +32,7 @@ const chartConfig = {
   averagePrintTime: {
     label: "Average Print Time",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
 export function BarChartAvgPrintTime() {
   const [chartData, setChartData] = React.useState<ChartData[]>([]);
@@ -42,15 +42,19 @@ export function BarChartAvgPrintTime() {
 
   const fetchData = React.useCallback(async (from: string, to: string) => {
     try {
-      const response = await fetch(`/api/3DPOS/average-print-time?from=${from}&to=${to}`);
+      const response = await fetch(
+        `/api/3DPOS/average-print-time?from=${from}&to=${to}`,
+      );
       if (!response.ok) {
-        throw new Error('Failed to fetch average print time data');
+        throw new Error("Failed to fetch average print time data");
       }
       const data: PrinterData[] = await response.json();
       return data;
     } catch (error) {
-      console.error('Error fetching average print time data:', error);
-      setError('Failed to load average print time data. Please try again later.');
+      console.error("Error fetching average print time data:", error);
+      setError(
+        "Failed to load average print time data. Please try again later.",
+      );
       return [];
     }
   }, []);
@@ -78,22 +82,31 @@ export function BarChartAvgPrintTime() {
         const toDate = new Date(month);
         toDate.setMonth(toDate.getMonth() + 1);
         toDate.setDate(0);
-        const data = await fetchData(fromDate, toDate.toISOString().slice(0, 10));
+        const data = await fetchData(
+          fromDate,
+          toDate.toISOString().slice(0, 10),
+        );
         allData[month] = data;
       }
 
-      const combinedData: ChartData[] = allData[threeMonths[0]].map(printer => ({
-        printerName: printer.printerName,
-        [threeMonths[0]]: parseFloat(printer.averagePrintTime),
-        [threeMonths[1]]: 0,
-        [threeMonths[2]]: 0,
-      }));
+      const combinedData: ChartData[] = allData[threeMonths[0]].map(
+        (printer) => ({
+          printerName: printer.printerName,
+          [threeMonths[0]]: parseFloat(printer.averagePrintTime),
+          [threeMonths[1]]: 0,
+          [threeMonths[2]]: 0,
+        }),
+      );
 
       for (let i = 1; i < 3; i++) {
-        allData[threeMonths[i]].forEach(printer => {
-          const existingPrinter = combinedData.find(p => p.printerName === printer.printerName);
+        allData[threeMonths[i]].forEach((printer) => {
+          const existingPrinter = combinedData.find(
+            (p) => p.printerName === printer.printerName,
+          );
           if (existingPrinter) {
-            existingPrinter[threeMonths[i]] = parseFloat(printer.averagePrintTime);
+            existingPrinter[threeMonths[i]] = parseFloat(
+              printer.averagePrintTime,
+            );
           } else {
             const newPrinter: ChartData = {
               printerName: printer.printerName,
@@ -114,12 +127,20 @@ export function BarChartAvgPrintTime() {
   }, [fetchData]);
 
   const total = React.useMemo(() => {
-    return months.reduce((acc, month) => {
-      const monthSum = chartData.reduce((sum, printer) => sum + (printer[month] as number || 0), 0);
-      const printerCount = chartData.filter(printer => printer[month]).length;
-      acc[month] = printerCount > 0 ? (monthSum / printerCount) : 0; // Calculate true average
-      return acc;
-    }, {} as { [key: string]: number });
+    return months.reduce(
+      (acc, month) => {
+        const monthSum = chartData.reduce(
+          (sum, printer) => sum + ((printer[month] as number) || 0),
+          0,
+        );
+        const printerCount = chartData.filter(
+          (printer) => printer[month],
+        ).length;
+        acc[month] = printerCount > 0 ? monthSum / printerCount : 0; // Calculate true average
+        return acc;
+      },
+      {} as { [key: string]: number },
+    );
   }, [chartData, months]);
 
   if (error) {
@@ -144,7 +165,10 @@ export function BarChartAvgPrintTime() {
               onClick={() => setActiveMonth(month)}
             >
               <span className="text-xs text-muted-foreground">
-                {new Date(month).toLocaleString('default', { month: 'long', year: 'numeric' })}
+                {new Date(month).toLocaleString("default", {
+                  month: "long",
+                  year: "numeric",
+                })}
               </span>
               <span className="text-lg font-bold leading-none sm:text-3xl">
                 {total[month].toFixed(2)}
@@ -174,7 +198,7 @@ export function BarChartAvgPrintTime() {
               tickMargin={8}
               minTickGap={32}
               interval={0}
-              tick={{ fontSize: 10, angle: -45, textAnchor: 'end' } as any}
+              tick={{ fontSize: 10, angle: -45, textAnchor: "end" } as any}
             />
             <ChartTooltip
               content={
@@ -184,7 +208,7 @@ export function BarChartAvgPrintTime() {
                 />
               }
             />
-            <Bar dataKey={activeMonth} fill="#B3A369"/>
+            <Bar dataKey={activeMonth} fill="#B3A369" />
           </BarChart>
         </ChartContainer>
       </CardContent>
