@@ -19,7 +19,11 @@ import IdlePrintersCard from "../src/ui/visuals/metric-cards/idle-printers"
 import PrinterStatusListView from "../src/ui/visuals/list-views/list-view-printer-status"
 import JobLeaderboardPodium from "../src/ui/visuals/leaderboard/leaderboard"
 import PrinterJobCounts from "../src/ui/visuals/job-counts/printerjobcounts"
-
+import CurrentCapacity from "../src/ui/visuals/metric-cards/current-capacity"
+import BarChartAvgPrintTime from "../src/ui/visuals/bar-charts/bar-chart-avg-print-time"
+import ToolUsageCard from "../src/ui/visuals/metric-cards/tool-usage-card"
+import PercentSuccessfulCard from "./PercentSuccessfulCard"
+import MostCommonReasonCard from "../src/ui/visuals/pie-chart/MostCommonReasonCard"
 
 
 
@@ -83,36 +87,53 @@ export default function Dashboard() {
                 />
               ))}
               <IdlePrintersCard />
+
+              <ToolUsageCard />
+
+              {/* Include CurrentCapacity component */}
+              <CurrentCapacity />
+
             </div>
   
-            {/* Second Row: List views (ToolStatusListView and PrinterStatusListView) */}
+            {/* Second Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-  {/* Graph */}
-  <div className="p-4 border rounded-lg shadow">
-        <h3 className="text-lg font-semibold mb-4">Attendance Over Time</h3>
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={data}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="month" />
-            <YAxis />
-            <Legend />
-            <Line 
-  type="monotone" 
-  dataKey="value" 
-  stroke="#B3A369"  // GT Gold
-  fill="rgba(0, 37, 76, 0.5)"  // GT Navy with opacity
-/>
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
+              {/* Second Row: List views (ToolStatusListView and PrinterStatusListView) */}
+              <ToolStatusListView />
+              <PrinterStatusListView />
+              <JobLeaderboardPodium />
+              <PrinterJobCounts />
+              {/* Second Row: Most Common Reasons Card */}
+            <MostCommonReasonCard />
+            </div>
+  
+            {/* Third Row: Attendance Line Chart */}
+            <div className="p-4 border rounded-lg shadow">
+              <h3 className="text-lg font-semibold mb-4">Attendance Over Time</h3>
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={data}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="month" />
+                  <YAxis />
+                  <Legend />
+                  <Line
+                    type="monotone"
+                    dataKey="value"
+                    stroke="#B3A369" // GT Gold
+                    fill="rgba(0, 37, 76, 0.5)" // GT Navy with opacity
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
 
-  {/* list view component */}
-  <ToolStatusListView/>
-  <PrinterStatusListView />
-  <JobLeaderboardPodium />
-  <PrinterJobCounts />
+            {/* Fourth Row: Average Print Time Bar Chart */}
+            <div className="p-4 border rounded-lg shadow">
+              <BarChartAvgPrintTime
+              />
+            </div>
 
-         </div>
+            {/* Fifth Row: Percent Successful Card */}
+            <PercentSuccessfulCard />
+
           </main>
         </div>
       </div>
