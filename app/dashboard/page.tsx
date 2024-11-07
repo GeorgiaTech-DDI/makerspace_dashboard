@@ -49,7 +49,7 @@ import PercentSuccessfulCard from "./PercentSuccessfulCard";
 import MostCommonReasonCard from "../src/ui/visuals/pie-chart/MostCommonReasonCard";
 import EquipmentUsageCard from "../src/ui/visuals/header-visuals/equipment-usage";
 import MetricCard from "../src/ui/visuals/metric-cards/metric-card";
-import CurrentCapacity from "../src/ui/visuals/metric-cards/current-capacity";
+import CurrentCapacity from "../src/ui/visuals/header-visuals/current-capacity";
 import AttendanceDataCard from "../src/ui/visuals/line-chart/attendance-over-time";
 
 // Sample metric data
