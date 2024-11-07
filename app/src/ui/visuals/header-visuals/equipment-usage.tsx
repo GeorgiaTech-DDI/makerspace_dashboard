@@ -7,6 +7,7 @@ const EquipmentUsageCard = () => {
     currentHours: string;
     previousHours: string;
     percentChange: string;
+    currentDayHours: string;
     trend: number[];
   } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -18,7 +19,6 @@ const EquipmentUsageCard = () => {
         setIsLoading(true);
         const response = await fetch("/api/SUMS/tool_usages?mode=trend");
         if (!response.ok) throw new Error("Failed to fetch usage data");
-
         const jsonData = await response.json();
         setData(jsonData);
       } catch (err) {
@@ -27,7 +27,6 @@ const EquipmentUsageCard = () => {
         setIsLoading(false);
       }
     };
-
     fetchData();
   }, []);
 
@@ -64,7 +63,7 @@ const EquipmentUsageCard = () => {
   return (
     <Card className="overflow-hidden">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">Equipment Usage</CardTitle>
+        <CardTitle className="text-sm font-medium">Equipment Usage Hours</CardTitle>
         <TrendingUpIcon className="h-4 w-4 text-muted-foreground" />
       </CardHeader>
       <CardContent className="pb-2">
@@ -84,10 +83,9 @@ const EquipmentUsageCard = () => {
               {data.percentChange}
             </div>
             <p className="text-xs text-muted-foreground">
-              minutes compared to last month
+              compared to same day last month
             </p>
           </div>
-
           <div className="h-[60px] w-[50%] ml-4">
             <TrendChart data={data.trend} />
           </div>

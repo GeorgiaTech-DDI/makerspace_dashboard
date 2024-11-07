@@ -1,12 +1,11 @@
-// app/api/SUMS/tool_usages/route.ts
 import { NextRequest, NextResponse } from "next/server";
 
 async function getToolUsages(
-  egKey: string,
-  egId: string,
+  token: string,
   startDate: string,
   endDate: string,
 ) {
+  const [egKey, egId] = token.split(":");
   const url = `https://sums.gatech.edu/SUMS_React_Shift_Scheduler/rest/EGInfo/DailyToolUsages?EGKey=${egKey}&EGId=${egId}&StartDate=${encodeURIComponent(startDate)}&EndDate=${encodeURIComponent(endDate)}`;
   const response = await fetch(url);
   if (!response.ok) {
@@ -29,13 +28,12 @@ function formatDate(date: Date): string {
 
 export async function GET(request: NextRequest) {
   try {
-    const egKey = process.env.EG_KEY;
-    const egId = process.env.EG_ID;
-    if (!egKey || !egId) {
-      throw new Error("EGKey or EGId is not provided");
+    // Get token from header
+    const token = request.headers.get("x-sums-token");
+    if (!token) {
+      throw new Error("SUMS token is not provided");
     }
 
-    // Get URL parameters
     const url = new URL(request.url);
     const mode = url.searchParams.get("mode") || "default";
 
@@ -66,8 +64,7 @@ export async function GET(request: NextRequest) {
               );
 
         const data = await getToolUsages(
-          egKey,
-          egId,
+          token,
           formatDate(monthStart),
           formatDate(monthEnd),
         );
@@ -75,23 +72,46 @@ export async function GET(request: NextRequest) {
         trendData.push(hours);
       }
 
-      // Calculate month-over-month change
-      const currentMonth = trendData[trendData.length - 1];
-      const previousMonth = trendData[trendData.length - 2];
+      // Get previous month's same day
+      const previousMonthDate = new Date(adjustedToday);
+      previousMonthDate.setMonth(previousMonthDate.getMonth() - 1);
+      
+      // Get current day and previous month's same day data
+      const [currentDayData, previousMonthDayData] = await Promise.all([
+        getToolUsages(
+          token,
+          formatDate(adjustedToday),
+          formatDate(adjustedToday)
+        ),
+        getToolUsages(
+          token,
+          formatDate(previousMonthDate),
+          formatDate(previousMonthDate)
+        )
+      ]);
+
+      // Get current month's total hours (will be the last item in trendData)
+      const currentMonthHours = trendData[trendData.length - 1];
+
+      const currentDayHours = aggregateUsageHours(currentDayData);
+      const previousMonthDayHours = aggregateUsageHours(previousMonthDayData);
+
+      // Calculate day-over-day month change
       const percentChange =
-        previousMonth === 0
+        previousMonthDayHours === 0
           ? 0
-          : ((currentMonth - previousMonth) / previousMonth) * 100;
+          : ((currentDayHours - previousMonthDayHours) / previousMonthDayHours) * 100;
 
       return NextResponse.json({
-        currentHours: currentMonth.toFixed(2),
-        previousHours: previousMonth.toFixed(2),
+        currentHours: currentMonthHours.toFixed(2),
+        previousHours: previousMonthDayHours.toFixed(2),
         percentChange:
           (percentChange > 0 ? "+" : "") + percentChange.toFixed(1) + "%",
+        currentDayHours: currentDayHours.toFixed(2),
         trend: trendData,
       });
     } else {
-      // Original behavior
+      // Original behavior for default mode
       const dayStartDate = formatDate(adjustedToday);
       const dayEndDate = formatDate(adjustedToday);
 
@@ -112,9 +132,9 @@ export async function GET(request: NextRequest) {
       const monthEndDate = formatDate(adjustedToday);
 
       const [dayData, weekData, monthData] = await Promise.all([
-        getToolUsages(egKey, egId, dayStartDate, dayEndDate),
-        getToolUsages(egKey, egId, weekStartDate, weekEndDate),
-        getToolUsages(egKey, egId, monthStartDate, monthEndDate),
+        getToolUsages(token, dayStartDate, dayEndDate),
+        getToolUsages(token, weekStartDate, weekEndDate),
+        getToolUsages(token, monthStartDate, monthEndDate),
       ]);
 
       return NextResponse.json({
