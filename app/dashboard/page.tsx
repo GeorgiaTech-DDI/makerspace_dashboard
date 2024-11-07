@@ -50,17 +50,7 @@ import MostCommonReasonCard from "../src/ui/visuals/pie-chart/MostCommonReasonCa
 import EquipmentUsageCard from "../src/ui/visuals/header-visuals/equipment-usage";
 import MetricCard from "../src/ui/visuals/metric-cards/metric-card";
 import CurrentCapacity from "../src/ui/visuals/metric-cards/current-capacity";
-
-// Sample data for the attendance chart
-const data = [
-  { month: "Jan", value: 65 },
-  { month: "Feb", value: 59 },
-  { month: "Mar", value: 80 },
-  { month: "Apr", value: 81 },
-  { month: "May", value: 56 },
-  { month: "Jun", value: 55 },
-  { month: "Jul", value: 40 },
-];
+import AttendanceDataCard from "../src/ui/visuals/line-chart/attendance-over-time";
 
 // Sample metric data
 const metricData = [
@@ -116,27 +106,9 @@ const componentRegistry = {
   },
   attendance: {
     id: "attendance",
-    label: "Attendance Chart",
-    component: () => (
-      <div className="p-4 border rounded-lg shadow">
-        <h3 className="text-lg font-semibold mb-4">Attendance Over Time</h3>
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={data}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="month" />
-            <YAxis />
-            <Legend />
-            <Line
-              type="monotone"
-              dataKey="value"
-              stroke="#B3A369"
-              fill="rgba(0, 37, 76, 0.5)"
-            />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
-    ),
-    defaultSize: "full",
+    label: "Attendance Over Time",
+    component: AttendanceDataCard,
+    defaultSize: "half",
   },
   printTime: {
     id: "printTime",
