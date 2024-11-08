@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   Form,
@@ -23,7 +23,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 
-import { ComponentRegistry } from './dashboardComponentsList';
+import { ComponentRegistry } from '../../../dashboard/dashboardComponentsList';
 
 interface DashboardSettingsDrawerProps {
   selectedComponents: string[];
@@ -40,11 +40,28 @@ const DashboardSettingsDrawer: React.FC<DashboardSettingsDrawerProps> = ({
   onOrderChange,
   componentRegistry,
 }) => {
+  const [isSaving, setIsSaving] = useState(false);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+
   const form = useForm({
     defaultValues: {
       components: selectedComponents,
     },
   });
+
+  const handleFormChange = () => {
+    setHasUnsavedChanges(true);
+  };
+
+  const handleSubmit = async (data: { components: string[] }) => {
+    setIsSaving(true);
+    try {
+      await onSettingsSubmit(data);
+      setHasUnsavedChanges(false);
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   return (
     <Drawer>
@@ -66,7 +83,8 @@ const DashboardSettingsDrawer: React.FC<DashboardSettingsDrawerProps> = ({
           <div className="p-4">
             <Form {...form}>
               <form
-                onSubmit={form.handleSubmit(onSettingsSubmit)}
+                onChange={handleFormChange}
+                onSubmit={form.handleSubmit(handleSubmit)}
                 className="space-y-4"
               >
                 <div className="space-y-2">
@@ -91,6 +109,7 @@ const DashboardSettingsDrawer: React.FC<DashboardSettingsDrawerProps> = ({
                                       field.value?.filter((v) => v !== id)
                                     );
                                   }
+                                  setHasUnsavedChanges(true);
                                 }}
                               />
                             </FormControl>
@@ -107,7 +126,10 @@ const DashboardSettingsDrawer: React.FC<DashboardSettingsDrawerProps> = ({
                           size="icon"
                           className="h-8 w-8"
                           disabled={index === 0}
-                          onClick={() => onOrderChange(index, index - 1)}
+                          onClick={() => {
+                            onOrderChange(index, index - 1);
+                            setHasUnsavedChanges(true);
+                          }}
                         >
                           <ChevronUp className="h-4 w-4" />
                         </Button>
@@ -117,7 +139,10 @@ const DashboardSettingsDrawer: React.FC<DashboardSettingsDrawerProps> = ({
                           size="icon"
                           className="h-8 w-8"
                           disabled={index === componentOrder.length - 1}
-                          onClick={() => onOrderChange(index, index + 1)}
+                          onClick={() => {
+                            onOrderChange(index, index + 1);
+                            setHasUnsavedChanges(true);
+                          }}
                         >
                           <ChevronDown className="h-4 w-4" />
                         </Button>
@@ -127,9 +152,14 @@ const DashboardSettingsDrawer: React.FC<DashboardSettingsDrawerProps> = ({
                 </div>
 
                 <DrawerFooter className="px-0">
-                  <Button type="submit">Save Changes</Button>
+                  <Button 
+                    type="submit"
+                    disabled={isSaving || !hasUnsavedChanges}
+                  >
+                    {isSaving ? 'Saving...' : 'Save Changes'}
+                  </Button>
                   <DrawerClose asChild>
-                    <Button variant="outline">Cancel</Button>
+                    <Button variant="outline">Close</Button>
                   </DrawerClose>
                 </DrawerFooter>
               </form>

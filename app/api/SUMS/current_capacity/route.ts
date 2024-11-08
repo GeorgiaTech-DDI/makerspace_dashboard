@@ -99,10 +99,11 @@ async function getToolUsages(token: string) {
 function getActiveUsers(
   users: UserSession[] | null | undefined,
 ): UserSession[] {
-  console.log("Processing users:", {
-    receivedUsers: !!users,
-    userCount: users?.length,
-  });
+  // console.log("Processing users:", {
+  //   receivedUsers: !!users,
+  //   userCount: users?.length,
+  // });
+
 
   if (!users || !Array.isArray(users)) {
     console.log("No valid users array provided");
