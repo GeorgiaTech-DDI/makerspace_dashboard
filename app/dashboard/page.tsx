@@ -9,6 +9,8 @@ import MetricCard from "../src/ui/visuals/metric-cards/metric-card";
 import CurrentCapacity from "../src/ui/visuals/header-visuals/current-capacity";
 import DashboardSettingsDrawer from "../src/ui/navigation/drawer";
 import componentRegistry from "./dashboardComponentsList";
+import withSourceIcon from '../src/ui/visuals/wrappers/withSourceIcon';
+
 
 // Sample metric data
 const metricData = [
@@ -124,9 +126,10 @@ const DynamicDashboard = () => {
         <div className="grid md:grid-cols-2 gap-4">
           {halfWidthComponents.map((config) => {
             const Component = config.component;
+            const WrappedComponent = withSourceIcon(Component, config.source);
             return (
               <div key={config.id} className="transition-opacity duration-200">
-                <Component />
+                <WrappedComponent />
               </div>
             );
           })}
@@ -134,9 +137,10 @@ const DynamicDashboard = () => {
         <div className="space-y-4">
           {fullWidthComponents.map((config) => {
             const Component = config.component;
+            const WrappedComponent = withSourceIcon(Component, config.source);
             return (
               <div key={config.id} className="transition-opacity duration-200">
-                <Component />
+                <WrappedComponent />
               </div>
             );
           })}
