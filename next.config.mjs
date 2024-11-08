@@ -29,14 +29,6 @@ const nextConfig = {
       fullUrl: true,
     },
   },
-  // Optional: Configure image domains if you're using next/image
-  images: {
-    domains: [],
-  },
-  // Ensure we can use Node.js APIs in route handlers
-  experimental: {
-    serverActions: true,
-  },
 };
 
 export default nextConfig;

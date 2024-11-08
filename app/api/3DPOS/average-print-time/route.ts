@@ -28,8 +28,8 @@ async function getCustomReport(session: string, from: string, to: string) {
 
   const data = await response.json();
 
-  // Log the data for debugging
-  console.log(`Data fetched for ${from} to ${to}:`, data);
+  // Log the data for debugging (WE CLOGGING THEM LOGS)
+  // console.log(`Data fetched for ${from} to ${to}:`, data);
 
   if (!data.result) {
     console.error("API Error:", data.message);
