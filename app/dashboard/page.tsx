@@ -9,8 +9,7 @@ import MetricCard from "../src/ui/visuals/metric-cards/metric-card";
 import CurrentCapacity from "../src/ui/visuals/header-visuals/current-capacity";
 import DashboardSettingsDrawer from "../src/ui/navigation/drawer";
 import componentRegistry from "./dashboardComponentsList";
-import withSourceIcon from '../src/ui/visuals/wrappers/withSourceIcon';
-
+import withSourceIcon from "../src/ui/visuals/wrappers/withSourceIcon";
 
 // Sample metric data
 const metricData = [
@@ -59,10 +58,10 @@ const DynamicDashboard = () => {
   };
 
   const [selectedComponents, setSelectedComponents] = useState(
-    Object.keys(componentRegistry)
+    Object.keys(componentRegistry),
   );
   const [componentOrder, setComponentOrder] = useState(
-    Object.keys(componentRegistry)
+    Object.keys(componentRegistry),
   );
 
   // Load preferences after mount
@@ -82,7 +81,7 @@ const DynamicDashboard = () => {
         JSON.stringify({
           selectedComponents,
           componentOrder,
-        })
+        }),
       );
     }
   }, [selectedComponents, componentOrder, isMounted]);

@@ -11,8 +11,8 @@ export interface DashboardComponent {
   id: string;
   label: string;
   component: React.ComponentType;
-  defaultSize: 'half' | 'full';
-  source?: 'SUMS' | '3DPOS';
+  defaultSize: "half" | "full";
+  source?: "SUMS" | "3DPOS";
 }
 
 export interface ComponentRegistry {
@@ -25,56 +25,56 @@ export const componentRegistry: ComponentRegistry = {
     label: "Tool Status List",
     component: ToolStatusListView,
     defaultSize: "half",
-    source: "SUMS"
+    source: "SUMS",
   },
   printerStatus: {
     id: "printerStatus",
     label: "Printer Status List",
     component: PrinterStatusListView,
     defaultSize: "half",
-    source: "3DPOS"
+    source: "3DPOS",
   },
   leaderboard: {
     id: "leaderboard",
     label: "Job Leaderboard",
     component: JobLeaderboardPodium,
     defaultSize: "half",
-    source: "3DPOS"
+    source: "3DPOS",
   },
   jobCounts: {
     id: "jobCounts",
     label: "Printer Job Counts",
     component: PrinterJobCounts,
     defaultSize: "half",
-    source: "3DPOS"
+    source: "3DPOS",
   },
   commonReasons: {
     id: "commonReasons",
     label: "Most Common Reasons",
     component: MostCommonReasonCard,
     defaultSize: "half",
-    source: "3DPOS"
+    source: "3DPOS",
   },
   attendance: {
     id: "attendance",
     label: "Attendance Over Time",
     component: AttendanceDataCard,
     defaultSize: "half",
-    source: "SUMS"
+    source: "SUMS",
   },
   printTime: {
     id: "printTime",
     label: "Average Print Time",
     component: BarChartAvgPrintTime,
     defaultSize: "full",
-    source: "3DPOS"
+    source: "3DPOS",
   },
   percentSuccess: {
     id: "percentSuccess",
     label: "Success Rate",
     component: PercentSuccessfulCard,
     defaultSize: "full",
-    source: "3DPOS"
+    source: "3DPOS",
   },
 };
 

@@ -112,8 +112,8 @@ function getLast7Periods(period: "day" | "week", currentDate: Date) {
   return periods.reverse();
 }
 
-export const dynamic = 'force-dynamic'; // Required because we're using headers
-export const runtime = 'edge'; // Optional: Choose edge or nodejs runtime
+export const dynamic = "force-dynamic"; // Required because we're using headers
+export const runtime = "edge"; // Optional: Choose edge or nodejs runtime
 
 // GET request handler for the /jobs route
 export async function GET(request: NextRequest) {

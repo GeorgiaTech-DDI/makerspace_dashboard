@@ -104,7 +104,6 @@ function getActiveUsers(
   //   userCount: users?.length,
   // });
 
-
   if (!users || !Array.isArray(users)) {
     console.log("No valid users array provided");
     return [];
@@ -161,9 +160,8 @@ function getActiveUsers(
   });
 }
 
-
-export const dynamic = 'force-dynamic'; // Required because we're using headers
-export const runtime = 'edge'; // Optional: Choose edge or nodejs runtime
+export const dynamic = "force-dynamic"; // Required because we're using headers
+export const runtime = "edge"; // Optional: Choose edge or nodejs runtime
 
 export async function GET(request: NextRequest) {
   try {

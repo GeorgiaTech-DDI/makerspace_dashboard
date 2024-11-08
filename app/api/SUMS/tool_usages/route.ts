@@ -26,8 +26,8 @@ function formatDate(date: Date): string {
   return `${year}-${month}-${day}`;
 }
 
-export const dynamic = 'force-dynamic'; // Required because we're using headers
-export const runtime = 'edge'; // Optional: Choose edge or nodejs runtime
+export const dynamic = "force-dynamic"; // Required because we're using headers
+export const runtime = "edge"; // Optional: Choose edge or nodejs runtime
 
 export async function GET(request: NextRequest) {
   try {
@@ -78,19 +78,19 @@ export async function GET(request: NextRequest) {
       // Get previous month's same day
       const previousMonthDate = new Date(adjustedToday);
       previousMonthDate.setMonth(previousMonthDate.getMonth() - 1);
-      
+
       // Get current day and previous month's same day data
       const [currentDayData, previousMonthDayData] = await Promise.all([
         getToolUsages(
           token,
           formatDate(adjustedToday),
-          formatDate(adjustedToday)
+          formatDate(adjustedToday),
         ),
         getToolUsages(
           token,
           formatDate(previousMonthDate),
-          formatDate(previousMonthDate)
-        )
+          formatDate(previousMonthDate),
+        ),
       ]);
 
       // Get current month's total hours (will be the last item in trendData)
@@ -103,7 +103,9 @@ export async function GET(request: NextRequest) {
       const percentChange =
         previousMonthDayHours === 0
           ? 0
-          : ((currentDayHours - previousMonthDayHours) / previousMonthDayHours) * 100;
+          : ((currentDayHours - previousMonthDayHours) /
+              previousMonthDayHours) *
+            100;
 
       return NextResponse.json({
         currentHours: currentMonthHours.toFixed(2),

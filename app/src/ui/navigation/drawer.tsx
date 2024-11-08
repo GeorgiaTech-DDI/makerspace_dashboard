@@ -23,7 +23,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 
-import { ComponentRegistry } from '../../../dashboard/dashboardComponentsList';
+import { ComponentRegistry } from "../../../dashboard/dashboardComponentsList";
 
 interface DashboardSettingsDrawerProps {
   selectedComponents: string[];
@@ -106,7 +106,7 @@ const DashboardSettingsDrawer: React.FC<DashboardSettingsDrawerProps> = ({
                                     field.onChange([...field.value, id]);
                                   } else {
                                     field.onChange(
-                                      field.value?.filter((v) => v !== id)
+                                      field.value?.filter((v) => v !== id),
                                     );
                                   }
                                   setHasUnsavedChanges(true);
@@ -152,11 +152,11 @@ const DashboardSettingsDrawer: React.FC<DashboardSettingsDrawerProps> = ({
                 </div>
 
                 <DrawerFooter className="px-0">
-                  <Button 
+                  <Button
                     type="submit"
                     disabled={isSaving || !hasUnsavedChanges}
                   >
-                    {isSaving ? 'Saving...' : 'Save Changes'}
+                    {isSaving ? "Saving..." : "Save Changes"}
                   </Button>
                   <DrawerClose asChild>
                     <Button variant="outline">Close</Button>
