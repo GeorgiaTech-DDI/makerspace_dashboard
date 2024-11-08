@@ -28,8 +28,8 @@ async function getCustomReport(session: string, from: string, to: string) {
 
   const data = await response.json();
 
-  // Log the data for debugging
-  console.log(`Data fetched for ${from} to ${to}:`, data);
+  // Log the data for debugging (WE CLOGGING THEM LOGS)
+  // console.log(`Data fetched for ${from} to ${to}:`, data);
 
   if (!data.result) {
     console.error("API Error:", data.message);
@@ -93,6 +93,9 @@ function convertToMinutes(timeString: string): number {
   const [hours, minutes] = timeString.split(":").map(Number);
   return hours * 60 + minutes;
 }
+
+export const dynamic = "force-dynamic"; // Required because we're using headers
+export const runtime = "edge"; // Optional: Choose edge or nodejs runtime
 
 export async function GET(request: NextRequest) {
   try {

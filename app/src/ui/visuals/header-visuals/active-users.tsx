@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowUpIcon, ArrowDownIcon, TrendingUpIcon } from "lucide-react";
 
-const EquipmentUsageCard = () => {
+const ActiveUsersCard = () => {
   const [data, setData] = useState<{
-    currentHours: string;
-    previousHours: string;
+    currentUsers: string;
+    previousUsers: string;
     percentChange: string;
-    currentDayHours: string;
+    currentDayUsers: string;
     trend: number[];
   } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -17,8 +17,8 @@ const EquipmentUsageCard = () => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch("/api/SUMS/tool_usages?mode=trend");
-        if (!response.ok) throw new Error("Failed to fetch usage data");
+        const response = await fetch("/api/SUMS/active_users?mode=trend");
+        if (!response.ok) throw new Error("Failed to fetch user data");
         const jsonData = await response.json();
         setData(jsonData);
       } catch (err) {
@@ -35,7 +35,7 @@ const EquipmentUsageCard = () => {
     return (
       <Card className="overflow-hidden">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Equipment Usage Hours</CardTitle>
+          <CardTitle className="text-sm font-medium">Active Users</CardTitle>
           <TrendingUpIcon className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent className="pb-2">
@@ -66,7 +66,7 @@ const EquipmentUsageCard = () => {
     return (
       <Card className="overflow-hidden">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Equipment Usage Hours</CardTitle>
+          <CardTitle className="text-sm font-medium">Active Users</CardTitle>
           <TrendingUpIcon className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent className="pb-2">
@@ -76,19 +76,19 @@ const EquipmentUsageCard = () => {
     );
   }
 
-  const isPositive = data.percentChange.startsWith("+");
+  const isPositive = !data.percentChange.startsWith("-");
 
   return (
     <Card className="overflow-hidden">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">Equipment Usage Hours</CardTitle>
+        <CardTitle className="text-sm font-medium">Active Users</CardTitle>
         <TrendingUpIcon className="h-4 w-4 text-muted-foreground" />
       </CardHeader>
       <CardContent className="pb-2">
         <div className="flex items-start justify-between">
           <div className="flex flex-col space-y-1">
             <div className="text-3xl font-bold">
-              {parseFloat(data.currentHours).toFixed(1)}
+              {parseFloat(data.currentUsers).toFixed(0)}
             </div>
             <div
               className={`text-sm font-medium ${
@@ -135,4 +135,4 @@ function TrendChart({ data }: { data: number[] }) {
   );
 }
 
-export default EquipmentUsageCard;
+export default ActiveUsersCard;

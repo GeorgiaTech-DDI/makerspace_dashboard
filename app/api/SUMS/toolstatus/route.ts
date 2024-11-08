@@ -13,6 +13,9 @@ async function getToolStatus(token: string) {
   return response.json();
 }
 
+export const dynamic = "force-dynamic"; // Required because we're using headers
+export const runtime = "edge"; // Optional: Choose edge or nodejs runtime
+
 export async function GET(request: NextRequest) {
   try {
     // Step 1: Get token from header
