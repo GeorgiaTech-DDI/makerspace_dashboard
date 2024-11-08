@@ -4,7 +4,6 @@ frontend:
   phases:
     preBuild:
       commands:
-        # Install dependencies
         - npm ci
     build:
       commands:
@@ -25,13 +24,3 @@ frontend:
     paths:
       - node_modules/**/*
       - .next/cache/**/*
-
-  customHeaders:
-    - pattern: '/api/**'
-      headers:
-        - key: 'Access-Control-Allow-Origin'
-          value: '*'
-        - key: 'Access-Control-Allow-Headers'
-          value: 'Origin, X-Requested-With, Content-Type, Accept, x-printer-session, x-sums-token'
-        - key: 'Access-Control-Allow-Methods'
-          value: 'GET, POST, OPTIONS'
