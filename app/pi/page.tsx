@@ -11,7 +11,6 @@ import DashboardSettingsDrawer from "../src/ui/navigation/drawer";
 import componentRegistry from "./piComponentsList";
 import withSourceIcon from "../src/ui/visuals/wrappers/withSourceIcon";
 
-
 const PiPage = () => {
   const [isMounted, setIsMounted] = useState(false);
 
