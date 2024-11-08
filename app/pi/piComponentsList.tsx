@@ -20,32 +20,32 @@ export interface ComponentRegistry {
 }
 
 export const componentRegistry: ComponentRegistry = {
-  toolStatus: {
-    id: "toolStatus",
-    label: "Tool Status List",
-    component: ToolStatusListView,
+  commonReasons: {
+    id: "commonReasons",
+    label: "Most Common Reasons",
+    component: MostCommonReasonCard,
+    defaultSize: "half",
+    source: "3DPOS",
+  },
+  attendance: {
+    id: "attendance",
+    label: "Attendance Over Time",
+    component: AttendanceDataCard,
     defaultSize: "half",
     source: "SUMS",
   },
-  printerStatus: {
-    id: "printerStatus",
-    label: "Printer Status List",
-    component: PrinterStatusListView,
-    defaultSize: "half",
+  printTime: {
+    id: "printTime",
+    label: "Average Print Time",
+    component: BarChartAvgPrintTime,
+    defaultSize: "full",
     source: "3DPOS",
   },
-  leaderboard: {
-    id: "leaderboard",
-    label: "Job Leaderboard",
-    component: JobLeaderboardPodium,
-    defaultSize: "half",
-    source: "3DPOS",
-  },
-  jobCounts: {
-    id: "jobCounts",
-    label: "Printer Job Counts",
-    component: PrinterJobCounts,
-    defaultSize: "half",
+  percentSuccess: {
+    id: "percentSuccess",
+    label: "Success Rate",
+    component: PercentSuccessfulCard,
+    defaultSize: "full",
     source: "3DPOS",
   },
 };
