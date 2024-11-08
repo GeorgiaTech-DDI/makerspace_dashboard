@@ -48,34 +48,6 @@ export const componentRegistry: ComponentRegistry = {
     defaultSize: "half",
     source: "3DPOS",
   },
-  commonReasons: {
-    id: "commonReasons",
-    label: "Most Common Reasons",
-    component: MostCommonReasonCard,
-    defaultSize: "half",
-    source: "3DPOS",
-  },
-  attendance: {
-    id: "attendance",
-    label: "Attendance Over Time",
-    component: AttendanceDataCard,
-    defaultSize: "half",
-    source: "SUMS",
-  },
-  printTime: {
-    id: "printTime",
-    label: "Average Print Time",
-    component: BarChartAvgPrintTime,
-    defaultSize: "full",
-    source: "3DPOS",
-  },
-  percentSuccess: {
-    id: "percentSuccess",
-    label: "Success Rate",
-    component: PercentSuccessfulCard,
-    defaultSize: "full",
-    source: "3DPOS",
-  },
 };
 
 export default componentRegistry;
