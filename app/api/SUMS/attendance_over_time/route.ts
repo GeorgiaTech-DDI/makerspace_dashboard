@@ -35,6 +35,9 @@ async function fetchToolUsages(token: string, from: string, to: string): Promise
   return data;
 }
 
+
+export const dynamic = 'force-dynamic'; // Required because we're using headers
+export const runtime = 'edge'; // Optional: Choose edge or nodejs runtime
 // Main function to handle GET requests and process attendance data
 export async function GET(request: NextRequest) {
   try {

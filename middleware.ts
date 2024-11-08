@@ -2,6 +2,15 @@ import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
 import { auth3DPOS, authSUMS, checkSession3DPOS } from "./lib/auth";
 
+declare module 'next/server' {
+  interface NextRequest {
+    auth?: {
+      session?: string;
+      token?: string;
+    }
+  }
+}
+
 export async function middleware(request: NextRequest) {
   if (request.nextUrl.pathname.startsWith("/api/3DPOS")) {
     return handle3DPOSAuth(request);

@@ -3,6 +3,9 @@ import { getJobInfo } from "../get-job-info/route";
 import { getJobsPerPrinter } from "../print-jobs/route";
 import { getOrganizationPrinters } from "../printers/route";
 
+export const dynamic = 'force-dynamic'; // Required because we're using headers
+export const runtime = 'edge'; // Optional: Choose edge or nodejs runtime
+
 export async function GET(request: NextRequest) {
   try {
     const session = request.headers.get("x-printer-session");
