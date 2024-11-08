@@ -31,14 +31,32 @@ const EquipmentUsageCard = () => {
   }, []);
 
   if (isLoading || !data) {
+    // Loading state with pulsing animation
     return (
       <Card className="overflow-hidden">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Equipment Usage</CardTitle>
+          <CardTitle className="text-sm font-medium">Equipment Usage Hours</CardTitle>
           <TrendingUpIcon className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent className="pb-2">
-          <div className="text-3xl font-bold">Loading...</div>
+          <div className="flex items-start justify-between">
+            <div className="flex flex-col space-y-1">
+              <div className="h-8 w-20 bg-muted rounded animate-pulse" />
+              <div className="h-4 w-16 bg-muted rounded animate-pulse" />
+              <div className="h-3 w-32 bg-muted rounded animate-pulse" />
+            </div>
+            <div className="h-[60px] w-[50%] ml-4 flex items-end justify-between">
+              {[...Array(7)].map((_, index) => (
+                <div
+                  key={index}
+                  className="w-[8%] h-8 bg-muted animate-pulse"
+                  style={{
+                    animationDelay: `${index * 100}ms`
+                  }}
+                />
+              ))}
+            </div>
+          </div>
         </CardContent>
       </Card>
     );
@@ -48,7 +66,7 @@ const EquipmentUsageCard = () => {
     return (
       <Card className="overflow-hidden">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Equipment Usage</CardTitle>
+          <CardTitle className="text-sm font-medium">Equipment Usage Hours</CardTitle>
           <TrendingUpIcon className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent className="pb-2">
@@ -63,9 +81,7 @@ const EquipmentUsageCard = () => {
   return (
     <Card className="overflow-hidden">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">
-          Equipment Usage Hours
-        </CardTitle>
+        <CardTitle className="text-sm font-medium">Equipment Usage Hours</CardTitle>
         <TrendingUpIcon className="h-4 w-4 text-muted-foreground" />
       </CardHeader>
       <CardContent className="pb-2">
@@ -75,7 +91,9 @@ const EquipmentUsageCard = () => {
               {parseFloat(data.currentHours).toFixed(1)}
             </div>
             <div
-              className={`text-sm font-medium ${isPositive ? "text-green-500" : "text-red-500"}`}
+              className={`text-sm font-medium ${
+                isPositive ? "text-green-500" : "text-red-500"
+              }`}
             >
               {isPositive ? (
                 <ArrowUpIcon className="inline h-4 w-4" />
@@ -109,7 +127,7 @@ function TrendChart({ data }: { data: number[] }) {
           key={index}
           className="bg-primary w-[8%]"
           style={{
-            height: `${((value - min) / range) * 100}%`,
+            height: `${((value - min) / range) * 100}%`
           }}
         />
       ))}

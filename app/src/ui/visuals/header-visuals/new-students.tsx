@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowUpIcon, ArrowDownIcon, TrendingUpIcon } from "lucide-react";
 
-const ActiveUsersCard = () => {
+const NewStudentsCard = () => {
   const [data, setData] = useState<{
-    currentUsers: string;
-    previousUsers: string;
+    currentNewUsers: string;
+    previousNewUsers: string;
     percentChange: string;
-    currentDayUsers: string;
+    currentDayNewUsers: string;
     trend: number[];
   } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -17,8 +17,8 @@ const ActiveUsersCard = () => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch("/api/SUMS/active_users?mode=trend");
-        if (!response.ok) throw new Error("Failed to fetch user data");
+        const response = await fetch("/api/SUMS/new_students?mode=trend");
+        if (!response.ok) throw new Error("Failed to fetch student data");
         const jsonData = await response.json();
         setData(jsonData);
       } catch (err) {
@@ -35,7 +35,7 @@ const ActiveUsersCard = () => {
     return (
       <Card className="overflow-hidden">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Active Users</CardTitle>
+          <CardTitle className="text-sm font-medium">New Students</CardTitle>
           <TrendingUpIcon className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent className="pb-2">
@@ -66,7 +66,7 @@ const ActiveUsersCard = () => {
     return (
       <Card className="overflow-hidden">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Active Users</CardTitle>
+          <CardTitle className="text-sm font-medium">New Students</CardTitle>
           <TrendingUpIcon className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent className="pb-2">
@@ -81,14 +81,14 @@ const ActiveUsersCard = () => {
   return (
     <Card className="overflow-hidden">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">Active Users</CardTitle>
+        <CardTitle className="text-sm font-medium">New Students</CardTitle>
         <TrendingUpIcon className="h-4 w-4 text-muted-foreground" />
       </CardHeader>
       <CardContent className="pb-2">
         <div className="flex items-start justify-between">
           <div className="flex flex-col space-y-1">
             <div className="text-3xl font-bold">
-              {parseFloat(data.currentUsers).toFixed(0)}
+              {parseFloat(data.currentNewUsers).toFixed(0)}
             </div>
             <div
               className={`text-sm font-medium ${
@@ -115,7 +115,7 @@ const ActiveUsersCard = () => {
   );
 };
 
-function TrendChart({ data }: { data: number[] }) {
+function TrendChart({ data } : { data: number[] }) {
   const max = Math.max(...data);
   const min = Math.min(...data);
   const range = max - min;
@@ -135,4 +135,4 @@ function TrendChart({ data }: { data: number[] }) {
   );
 }
 
-export default ActiveUsersCard;
+export default NewStudentsCard;

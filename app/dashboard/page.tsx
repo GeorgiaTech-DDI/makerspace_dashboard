@@ -11,18 +11,8 @@ import DashboardSettingsDrawer from "../src/ui/navigation/drawer";
 import componentRegistry from "./dashboardComponentsList";
 import withSourceIcon from "../src/ui/visuals/wrappers/withSourceIcon";
 import ActiveUsersCard from "../src/ui/visuals/header-visuals/active-users";
+import NewStudentsCard from "../src/ui/visuals/header-visuals/new-students";
 
-// Sample metric data
-const metricData = [
-  {
-    title: "New Students",
-    value: "150",
-    change: "+25%",
-    description:
-      "A significant influx of new students joined the makerspace, driven by campus-wide promotion and introductory workshops.",
-    trend: [3, 8, 5, 9, 7, 6, 10, 8],
-  },
-];
 
 const DynamicDashboard = () => {
   const [isMounted, setIsMounted] = useState(false);
@@ -164,15 +154,7 @@ const DynamicDashboard = () => {
             <div className="grid md:grid-cols-4 gap-4">
               <EquipmentUsageCard />
               <ActiveUsersCard />
-              {metricData.map((metric, index) => (
-                <MetricCard
-                  key={index}
-                  title={metric.title}
-                  value={parseInt(metric.value)}
-                  change={metric.change}
-                  trend={metric.trend}
-                />
-              ))}
+              <NewStudentsCard />
               <CurrentCapacity />
             </div>
 
