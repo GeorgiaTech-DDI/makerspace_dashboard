@@ -1,0 +1,37 @@
+# amplify.yml
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        # Install dependencies
+        - npm ci
+    build:
+      commands:
+        # Create environment file
+        - touch .env.production
+        # Add environment variables
+        - echo "USER_3DOS=${USER_3DOS}" >> .env.production
+        - echo "PASS_3DOS=${PASS_3DOS}" >> .env.production
+        - echo "EG_KEY=${EG_KEY}" >> .env.production
+        - echo "EG_ID=${EG_ID}" >> .env.production
+        # Build the Next.js application
+        - npm run build
+  artifacts:
+    baseDirectory: .next
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - node_modules/**/*
+      - .next/cache/**/*
+
+  customHeaders:
+    - pattern: '/api/**'
+      headers:
+        - key: 'Access-Control-Allow-Origin'
+          value: '*'
+        - key: 'Access-Control-Allow-Headers'
+          value: 'Origin, X-Requested-With, Content-Type, Accept, x-printer-session, x-sums-token'
+        - key: 'Access-Control-Allow-Methods'
+          value: 'GET, POST, OPTIONS'
