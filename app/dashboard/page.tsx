@@ -45,7 +45,7 @@ import PrinterStatusListView from "../src/ui/visuals/list-views/list-view-printe
 import JobLeaderboardPodium from "../src/ui/visuals/leaderboard/leaderboard";
 import PrinterJobCounts from "../src/ui/visuals/job-counts/printerjobcounts";
 import BarChartAvgPrintTime from "../src/ui/visuals/bar-charts/bar-chart-avg-print-time";
-import PercentSuccessfulCard from "./PercentSuccessfulCard";
+import PercentSuccessfulCard from "../src/ui/visuals/line-chart/PercentSuccessfulCard";
 import MostCommonReasonCard from "../src/ui/visuals/pie-chart/MostCommonReasonCard";
 import EquipmentUsageCard from "../src/ui/visuals/header-visuals/equipment-usage";
 import MetricCard from "../src/ui/visuals/metric-cards/metric-card";

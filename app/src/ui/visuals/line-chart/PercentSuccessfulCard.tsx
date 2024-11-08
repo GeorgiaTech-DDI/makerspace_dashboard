@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import LineChartComponent from "../src/ui/visuals/line-chart/line-chart";
+import LineChartComponent from "./line-chart";
 
 export default function PercentSuccessfulCard() {
   const [period, setPeriod] = useState("day"); // Track whether day or week
