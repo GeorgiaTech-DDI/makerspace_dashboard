@@ -79,48 +79,56 @@ const componentRegistry = {
     label: "Tool Status List",
     component: ToolStatusListView,
     defaultSize: "half",
+    type: "SUMS",
   },
   printerStatus: {
     id: "printerStatus",
     label: "Printer Status List",
     component: PrinterStatusListView,
     defaultSize: "half",
+    type: "3DPOS",
   },
   leaderboard: {
     id: "leaderboard",
     label: "Job Leaderboard",
     component: JobLeaderboardPodium,
     defaultSize: "half",
+    type: "3DPOS",
   },
   jobCounts: {
     id: "jobCounts",
     label: "Printer Job Counts",
     component: PrinterJobCounts,
     defaultSize: "half",
+    type: "3DPOS",
   },
   commonReasons: {
     id: "commonReasons",
     label: "Most Common Reasons",
     component: MostCommonReasonCard,
     defaultSize: "half",
+    type: "3DPOS",
   },
   attendance: {
     id: "attendance",
     label: "Attendance Over Time",
     component: AttendanceDataCard,
     defaultSize: "half",
+    type: "SUMS",
   },
   printTime: {
     id: "printTime",
     label: "Average Print Time",
     component: BarChartAvgPrintTime,
     defaultSize: "full",
+    type: "3DPOS",
   },
   percentSuccess: {
     id: "percentSuccess",
     label: "Success Rate",
     component: PercentSuccessfulCard,
     defaultSize: "full",
+    type: "3DPOS",
   },
 };
 
@@ -222,6 +230,17 @@ const DynamicDashboard = () => {
       }
     });
 
+    const renderIcon = (type) => {
+      switch (type) {
+        case "SUMS":
+          return "🔧"; // SUMS icon
+        case "3DPOS":
+          return "🖨️"; // 3DPOS icon
+        default:
+          return null;
+      }
+    };
+
     return (
       <>
         <div className="grid md:grid-cols-2 gap-4">
@@ -229,6 +248,10 @@ const DynamicDashboard = () => {
             const Component = config.component;
             return (
               <div key={config.id} className="transition-opacity duration-200">
+                <div className="flex items-center space-x-2">
+                <span>{renderIcon(config.type)}</span>
+                <h3 className="text-lg font-semibold">{config.label}</h3>
+              </div>
                 <Component />
               </div>
             );
