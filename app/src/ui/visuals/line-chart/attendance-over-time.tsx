@@ -4,13 +4,13 @@ import React, { useState, useEffect, useCallback } from "react";
 import LineChartComponent from "./line-chart";
 
 interface MonthlyAttendance {
-    month: string;
-    Attendance: number;
+  month: string;
+  Attendance: number;
 }
 
 const AttendanceOverTimeChart = () => {
-    const [attendanceData, setAttendanceData] = useState<MonthlyAttendance[]>([]);
-    const [error, setError] = useState<string | null>(null);
+  const [attendanceData, setAttendanceData] = useState<MonthlyAttendance[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchAttendanceData = useCallback(async () => {
     try {
@@ -22,7 +22,9 @@ const AttendanceOverTimeChart = () => {
       const from = sixMonthsAgo.toISOString().slice(0, 10); // Format as YYYY-MM-DD
       const to = today.toISOString().slice(0, 10);
 
-      const response = await fetch(`/api/SUMS/attendance_over_time?from=${from}&to=${to}`);
+      const response = await fetch(
+        `/api/SUMS/attendance_over_time?from=${from}&to=${to}`,
+      );
       if (!response.ok) {
         throw new Error("Failed to fetch attendance data");
       }
@@ -37,7 +39,9 @@ const AttendanceOverTimeChart = () => {
   }, []);
 
   // Function to aggregate data by month
-  const aggregateByMonth = (attendanceData: { date: string; uniqueUsers: number }[]): MonthlyAttendance[] => {
+  const aggregateByMonth = (
+    attendanceData: { date: string; uniqueUsers: number }[],
+  ): MonthlyAttendance[] => {
     const monthlyData: Record<string, number> = {};
 
     attendanceData.forEach(({ date, uniqueUsers }) => {

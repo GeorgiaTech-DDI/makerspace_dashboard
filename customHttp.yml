@@ -1,33 +1,33 @@
 # customHttp.yml
 customHeaders:
   # API Routes CORS Headers
-  - pattern: '/api/*'
+  - pattern: "/api/*"
     headers:
-      - key: 'Access-Control-Allow-Origin'
-        value: '*'
-      - key: 'Access-Control-Allow-Methods'
-        value: 'GET,POST,OPTIONS'
-      - key: 'Access-Control-Allow-Headers'
-        value: 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, x-printer-session, x-sums-token'
-      - key: 'Access-Control-Allow-Credentials'
-        value: 'true'
-  
+      - key: "Access-Control-Allow-Origin"
+        value: "*"
+      - key: "Access-Control-Allow-Methods"
+        value: "GET,POST,OPTIONS"
+      - key: "Access-Control-Allow-Headers"
+        value: "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, x-printer-session, x-sums-token"
+      - key: "Access-Control-Allow-Credentials"
+        value: "true"
+
   # Security Headers for all routes
-  - pattern: '**/*'
+  - pattern: "**/*"
     headers:
-      - key: 'Strict-Transport-Security'
-        value: 'max-age=31536000; includeSubDomains'
-      - key: 'X-Frame-Options'
-        value: 'SAMEORIGIN'
-      - key: 'X-XSS-Protection'
-        value: '1; mode=block'
-      - key: 'X-Content-Type-Options'
-        value: 'nosniff'
-      - key: 'Referrer-Policy'
-        value: 'strict-origin-when-cross-origin'
+      - key: "Strict-Transport-Security"
+        value: "max-age=31536000; includeSubDomains"
+      - key: "X-Frame-Options"
+        value: "SAMEORIGIN"
+      - key: "X-XSS-Protection"
+        value: "1; mode=block"
+      - key: "X-Content-Type-Options"
+        value: "nosniff"
+      - key: "Referrer-Policy"
+        value: "strict-origin-when-cross-origin"
 
   # Static asset caching
-  - pattern: '/_next/static/*'
+  - pattern: "/_next/static/*"
     headers:
-      - key: 'Cache-Control'
-        value: 'public, max-age=31536000, immutable'
+      - key: "Cache-Control"
+        value: "public, max-age=31536000, immutable"

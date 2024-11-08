@@ -77,8 +77,8 @@ function categorizeReason(reason: string): string {
   return "Other";
 }
 
-export const dynamic = 'force-dynamic'; // Required because we're using headers
-export const runtime = 'edge'; // Optional: Choose edge or nodejs runtime
+export const dynamic = "force-dynamic"; // Required because we're using headers
+export const runtime = "edge"; // Optional: Choose edge or nodejs runtime
 
 export async function GET(request: NextRequest) {
   try {
