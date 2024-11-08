@@ -43,14 +43,9 @@ import Sidebar from "../src/ui/navigation/sidebar";
 import ToolStatusListView from "../src/ui/visuals/list-views/list-view-tool-status";
 import PrinterStatusListView from "../src/ui/visuals/list-views/list-view-printer-status";
 import JobLeaderboardPodium from "../src/ui/visuals/leaderboard/leaderboard";
-import PrinterJobCounts from "../src/ui/visuals/job-counts/printerjobcounts";
-import BarChartAvgPrintTime from "../src/ui/visuals/bar-charts/bar-chart-avg-print-time";
-import PercentSuccessfulCard from "./PercentSuccessfulCard";
-import MostCommonReasonCard from "../src/ui/visuals/pie-chart/MostCommonReasonCard";
 import EquipmentUsageCard from "../src/ui/visuals/header-visuals/equipment-usage";
 import MetricCard from "../src/ui/visuals/metric-cards/metric-card";
 import CurrentCapacity from "../src/ui/visuals/header-visuals/current-capacity";
-import AttendanceDataCard from "../src/ui/visuals/line-chart/attendance-over-time";
 
 // Sample metric data
 const metricData = [
@@ -79,49 +74,23 @@ const componentRegistry = {
     label: "Tool Status List",
     component: ToolStatusListView,
     defaultSize: "half",
+    type: "SUMS",
   },
   printerStatus: {
     id: "printerStatus",
     label: "Printer Status List",
     component: PrinterStatusListView,
     defaultSize: "half",
+    type: "3DPOS",
   },
   leaderboard: {
     id: "leaderboard",
     label: "Job Leaderboard",
     component: JobLeaderboardPodium,
-    defaultSize: "half",
-  },
-  jobCounts: {
-    id: "jobCounts",
-    label: "Printer Job Counts",
-    component: PrinterJobCounts,
-    defaultSize: "half",
-  },
-  commonReasons: {
-    id: "commonReasons",
-    label: "Most Common Reasons",
-    component: MostCommonReasonCard,
-    defaultSize: "half",
-  },
-  attendance: {
-    id: "attendance",
-    label: "Attendance Over Time",
-    component: AttendanceDataCard,
-    defaultSize: "half",
-  },
-  printTime: {
-    id: "printTime",
-    label: "Average Print Time",
-    component: BarChartAvgPrintTime,
     defaultSize: "full",
+    type: "3DPOS",
   },
-  percentSuccess: {
-    id: "percentSuccess",
-    label: "Success Rate",
-    component: PercentSuccessfulCard,
-    defaultSize: "full",
-  },
+
 };
 
 const DynamicDashboard = () => {
@@ -212,15 +181,26 @@ const DynamicDashboard = () => {
     const halfWidthComponents = [];
 
     orderToUse.forEach((componentId) => {
-      if (!selectedToUse.includes(componentId)) return;
-
       const config = componentRegistry[componentId];
+      if (!config) return; // Skip if undefined
+      if (!selectedToUse.includes(componentId)) return;
       if (config.defaultSize === "full") {
         fullWidthComponents.push(config);
       } else {
         halfWidthComponents.push(config);
       }
     });
+
+    const renderIcon = (type) => {
+      switch (type) {
+        case "SUMS":
+          return "🔧"; // SUMS icon
+        case "3DPOS":
+          return "🖨️"; // 3DPOS icon
+        default:
+          return null;
+      }
+    };
 
     return (
       <>
@@ -229,6 +209,10 @@ const DynamicDashboard = () => {
             const Component = config.component;
             return (
               <div key={config.id} className="transition-opacity duration-200">
+                <div className="flex items-center space-x-2">
+                <span>{renderIcon(config.type)}</span>
+                <h3 className="text-lg font-semibold">{config.label}</h3>
+              </div>
                 <Component />
               </div>
             );
@@ -239,6 +223,10 @@ const DynamicDashboard = () => {
             const Component = config.component;
             return (
               <div key={config.id} className="transition-opacity duration-200">
+                <div className="flex items-center space-x-2">
+                  <span>{renderIcon(config.type)}</span>
+                  <h3 className="text-lg font-semibold">{config.label}</h3>
+                </div>
                 <Component />
               </div>
             );
