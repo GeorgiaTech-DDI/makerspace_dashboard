@@ -14,6 +14,9 @@ frontend:
         - echo "PASS_3DOS=${PASS_3DOS}" >> .env.production
         - echo "EG_KEY=${EG_KEY}" >> .env.production
         - echo "EG_ID=${EG_ID}" >> .env.production
+        # Add CAS authentication variables
+        - echo "NEXTAUTH_URL=${NEXTAUTH_URL}" >> .env.production
+        - echo "NEXTAUTH_SECRET=${NEXTAUTH_SECRET}" >> .env.production
         # Add build timestamp
         - echo "NEXT_PUBLIC_BUILD_TIME=$(date +%s)" >> .env.production
         # Build the Next.js application
