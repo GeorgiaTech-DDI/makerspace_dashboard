@@ -6,12 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LogIn, LogOut } from "lucide-react";
+import { getBaseUrl } from '@/lib/cas';
 
 export default function AccountPage() {
   const [user, setUser] = useState<string | null>(null);
 
   useEffect(() => {
-    // Check for GT session cookie
     const gtSession = document.cookie
       .split('; ')
       .find(row => row.startsWith('gt_session='));
@@ -22,11 +22,16 @@ export default function AccountPage() {
   }, []);
 
   const handleLogin = () => {
-    window.location.href = '/dashboard'; // This will trigger CAS auth
+    const baseUrl = getBaseUrl();
+    const serviceUrl = `${baseUrl}/dashboard`;
+    const loginUrl = `https://sso.gatech.edu/cas/login?service=${encodeURIComponent(serviceUrl)}`;
+    window.location.href = loginUrl;
   };
 
   const handleLogout = () => {
-    window.location.href = '/api/auth/logout';
+    const baseUrl = getBaseUrl();
+    const serviceUrl = `${baseUrl}/account`;
+    window.location.href = `/api/auth/logout?service=${encodeURIComponent(serviceUrl)}`;
   };
 
   return (

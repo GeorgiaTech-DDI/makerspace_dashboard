@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
+// lib/cas.ts
+import { NextRequest } from 'next/server';
 
 const CAS_CONFIG = {
   version: '3.0',
@@ -7,6 +8,15 @@ const CAS_CONFIG = {
   port: 443,
   uri: '/cas'
 };
+
+export function getBaseUrl(request?: NextRequest): string {
+  if (process.env.NODE_ENV === 'production') {
+    // Use NEXTAUTH_URL in production
+    return process.env.NEXTAUTH_URL || 'https://prod.d21mn6i8vq0ak1.amplifyapp.com';
+  }
+  // In development, use the request URL or default to localhost
+  return request ? `${request.nextUrl.protocol}//${request.headers.get('host')}` : 'http://localhost:3000';
+}
 
 export function getCasLoginUrl(service: string) {
   return `${CAS_CONFIG.protocol}://${CAS_CONFIG.hostname}:${CAS_CONFIG.port}${CAS_CONFIG.uri}/login?service=${encodeURIComponent(service)}`;

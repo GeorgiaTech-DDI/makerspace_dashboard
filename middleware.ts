@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
 import { auth3DPOS, authSUMS, checkSession3DPOS } from "./lib/auth";
-import { getCasLoginUrl, getCasValidateUrl } from './lib/cas';
+import { getCasLoginUrl, getCasValidateUrl, getBaseUrl } from './lib/cas';
 
 // Define protected routes and their required roles
 const PROTECTED_ROUTES = {
@@ -39,10 +39,12 @@ export async function middleware(request: NextRequest) {
   );
 
   if (pathToCheck) {
+    // Get the required roles for this path
     const requiredRoles = PROTECTED_ROUTES[pathToCheck as keyof typeof PROTECTED_ROUTES];
     const session = request.cookies.get('gt_session');
     const ticket = request.nextUrl.searchParams.get('ticket');
-    const serviceUrl = `${request.nextUrl.origin}${request.nextUrl.pathname}`;
+    const baseUrl = getBaseUrl(request);
+    const serviceUrl = `${baseUrl}${request.nextUrl.pathname}`;
 
     // If no session and no ticket, redirect to CAS login
     if (!session && !ticket) {
@@ -110,7 +112,6 @@ export const config = {
   ]
 };
 
-
 async function handle3DPOSAuth(request: NextRequest) {
   try {
     console.log("Attempting 3DPOS authentication");
@@ -156,8 +157,6 @@ async function handleSUMSAuth(request: NextRequest) {
     const token = await authSUMS();
     const requestHeaders = new Headers(request.headers);
     requestHeaders.set("x-sums-token", token);
-    // this will still expose the token to the client since we're pretending to authenticate
-    // the token will never rotate or change (not good) but it's fine for now
     return NextResponse.next({
       headers: requestHeaders,
     });
