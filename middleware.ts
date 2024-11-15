@@ -80,6 +80,7 @@ export async function middleware(request: NextRequest) {
           sameSite: "lax",
           maxAge: 24 * 60 * 60, // 24 hours
           path: "/",
+          domain: request.headers.get("host")?.split(":")[0] || undefined
         });
 
         console.log("Setting cookie and redirecting to:", serviceUrl);
