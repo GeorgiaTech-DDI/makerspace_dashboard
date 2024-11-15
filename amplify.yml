@@ -16,6 +16,7 @@ frontend:
         - echo "EG_ID=${EG_ID}" >> .env.production
         # Add CAS authentication variables
         - echo "BYPASS_CAS=${BYPASS_CAS}" >> .env.production
+        - echo "NEXT_PUBLIC_BYPASS_CAS=${BYPASS_CAS}" >> .env.production
         - echo "NEXTAUTH_URL=${NEXTAUTH_URL}" >> .env.production
         - echo "NEXTAUTH_SECRET=${NEXTAUTH_SECRET}" >> .env.production
         # Add build timestamp
