@@ -1,42 +1,98 @@
-// app/account/page.tsx
 'use client';
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { LogIn, LogOut } from "lucide-react";
-import { getBaseUrl } from '@/lib/cas';
 
-export default function AccountPage() {
+// Determine if we're in production
+const isProduction = process.env.NODE_ENV === 'production';
+
+// Set default bypass behavior: true in production, false in dev
+// Override with NEXT_PUBLIC_BYPASS_CAS env var if it exists
+const BYPASS_CAS = process.env.NEXT_PUBLIC_BYPASS_CAS !== undefined 
+  ? process.env.NEXT_PUBLIC_BYPASS_CAS === 'true'
+  : isProduction;
+
+const CAS_CONFIG = {
+  protocol: 'https',
+  hostname: 'sso.gatech.edu',
+  port: 443,
+  uri: '/cas'
+};
+
+console.log('Account page module loaded');
+
+const AccountPage = () => {
   const [user, setUser] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const gtSession = document.cookie
-      .split('; ')
-      .find(row => row.startsWith('gt_session='));
-    
-    if (gtSession) {
-      setUser(decodeURIComponent(gtSession.split('=')[1]));
+    async function checkSession() {
+      try {
+        const response = await fetch('/api/auth/session');
+        const data = await response.json();
+        console.log('Session data:', data);
+        
+        if (data.user !== user) {
+          setUser(data.user);
+        }
+        
+        setLoading(false);
+      } catch (error) {
+        console.error('Error checking session:', error);
+        setLoading(false);
+      }
     }
-  }, []);
+    
+    // Initial check
+    checkSession();
+    
+    // Set up interval for continuous checking
+    const interval = setInterval(checkSession, 5000);
+    
+    // Cleanup
+    return () => clearInterval(interval);
+  }, [user]);
 
   const handleLogin = () => {
-    const baseUrl = getBaseUrl();
-    const serviceUrl = `${baseUrl}/dashboard`;
-    const loginUrl = `https://sso.gatech.edu/cas/login?service=${encodeURIComponent(serviceUrl)}`;
-    window.location.href = loginUrl;
+    console.log('Login clicked');
+    const baseUrl = window.location.origin;
+    const serviceUrl = `${baseUrl}/account`;
+    
+    if (BYPASS_CAS) {
+      const mockTicket = `ST-MOCK-${Date.now()}-gburdell3`;
+      window.location.href = `${serviceUrl}?ticket=${mockTicket}`;
+    } else {
+      window.location.href = `${CAS_CONFIG.protocol}://${CAS_CONFIG.hostname}${CAS_CONFIG.uri}/login?service=${encodeURIComponent(serviceUrl)}`;
+    }
   };
 
   const handleLogout = () => {
-    const baseUrl = getBaseUrl();
+    console.log('Logout clicked');
+    const baseUrl = window.location.origin;
     const serviceUrl = `${baseUrl}/account`;
     window.location.href = `/api/auth/logout?service=${encodeURIComponent(serviceUrl)}`;
   };
 
+  console.log('Rendering with state:', { user, loading });
+
+  if (loading) {
+    return (
+      <div className="container mx-auto flex h-screen items-center justify-center p-4">
+        <Card className="w-full max-w-md">
+          <CardContent className="flex items-center justify-center p-8">
+            <div className="animate-pulse text-muted-foreground">Loading...</div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
-    <div className="container mx-auto p-8">
-      <Card className="max-w-md mx-auto">
+    <div className="container mx-auto flex h-screen items-center justify-center p-4">
+      <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Account</CardTitle>
           <CardDescription>
@@ -56,7 +112,7 @@ export default function AccountPage() {
                 </div>
               </div>
               <div className="space-y-4">
-                <div className="flex justify-between items-center">
+                <div className="flex items-center justify-between">
                   <span className="text-sm text-muted-foreground">Email</span>
                   <span>{user}@gatech.edu</span>
                 </div>
@@ -90,5 +146,6 @@ export default function AccountPage() {
       </Card>
     </div>
   );
-}
+};
 
+export default AccountPage;

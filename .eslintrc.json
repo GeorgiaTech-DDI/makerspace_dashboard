@@ -1,3 +1,16 @@
 {
-  "extends": ["next/core-web-vitals", "next/typescript"]
+  "extends": ["next/core-web-vitals", "next/typescript"],
+  "rules": {
+    "no-restricted-imports": [
+      "error",
+      {
+        "patterns": [
+          {
+            "group": ["process.env"],
+            "message": "Please import from lib/config instead of using process.env directly."
+          }
+        ]
+      }
+    ]
+  }
 }
