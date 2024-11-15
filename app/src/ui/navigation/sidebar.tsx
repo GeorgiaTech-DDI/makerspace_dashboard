@@ -4,6 +4,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   Triangle,
   SquareTerminal,
@@ -19,9 +20,22 @@ import {
 } from "lucide-react";
 import { redirect } from "next/dist/server/api-utils";
 import Link from "next/link";
-import { User } from "lucide-react";
+import { User, LogIn } from "lucide-react";
+import { useEffect, useState } from 'react';
 
 const Sidebar = () => {
+  const [user, setUser] = useState<string | null>(null);
+
+  useEffect(() => {
+    const gtSession = document.cookie
+      .split('; ')
+      .find(row => row.startsWith('gt_session='));
+    
+    if (gtSession) {
+      setUser(decodeURIComponent(gtSession.split('=')[1]));
+    }
+  }, []);
+
   return (
     <aside className="inset-y fixed left-0 z-20 flex h-full flex-col border-r">
       <div className="border-b p-2">
@@ -69,7 +83,7 @@ const Sidebar = () => {
           </TooltipContent>
         </Tooltip>
       </nav>
-      <nav className="mt-auto grid gap-1 p-2">
+       <nav className="mt-auto grid gap-1 p-2">
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
@@ -87,17 +101,27 @@ const Sidebar = () => {
         </Tooltip>
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="mt-auto rounded-lg"
-              aria-label="Account"
-            >
-              <SquareUser className="size-5" />
-            </Button>
+            <Link href="/account">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="mt-auto rounded-lg"
+                aria-label="Account"
+              >
+                {user ? (
+                  <Avatar className="h-5 w-5">
+                    <AvatarFallback className="text-xs">
+                      {user.slice(0, 2).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                ) : (
+                  <LogIn className="size-5" />
+                )}
+              </Button>
+            </Link>
           </TooltipTrigger>
           <TooltipContent side="right" sideOffset={5}>
-            Account
+            {user ? 'Account' : 'Sign In'}
           </TooltipContent>
         </Tooltip>
       </nav>
