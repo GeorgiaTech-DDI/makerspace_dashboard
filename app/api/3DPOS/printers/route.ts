@@ -24,6 +24,8 @@ export async function getOrganizationPrinters(session: string) {
   return data.message;
 }
 
+export const dynamic = "force-dynamic"; // Required because we're using headers
+export const runtime = "edge"; // Optional: Choose edge or nodejs runtime
 // GET request handler
 export async function GET(request: NextRequest) {
   try {

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 // define the interface (or type) for the tool status data
 // this helps ensure that each tool object has a 'Status' and 'ToolName' field
@@ -11,7 +11,7 @@ const ToolStatusListView = () => {
   // useState is a React hook that allows you to add state to functional components
   // `toolStatusData` stores the tool status information, initialized as an empty array
   const [toolStatusData, setToolStatusData] = useState<ToolStatus[]>([]);
-  
+
   // state to manage loading and error
   // these will help show loading indicators or error messages to the user
   const [loading, setLoading] = useState<boolean>(true);
@@ -25,31 +25,31 @@ const ToolStatusListView = () => {
       setLoading(true);
       setError(null); // reset any previous error
       try {
-        const response = await fetch('/api/SUMS/toolstatus');
+        const response = await fetch("/api/SUMS/toolstatus");
         if (!response.ok) {
-          throw new Error('Failed to fetch tool status');
+          throw new Error("Failed to fetch tool status");
         }
         const data = await response.json();
         // Define lists for filtering
-        const excludeKeywords = ['[TEST]', '[Test]'];
+        const excludeKeywords = ["[TEST]", "[Test]"];
         const excludeExactNames = [
-          'EcoMake Login',
-          'Hub Login',
-          'Metal Room Login',
-          'Wood Room Login',
-          'Shift Time Clock',
-          'SUMS Environment',
-          'Request Replacement PI',
-          'Test Inventory Tool',
-          'CAE Helpdesk',
-          'SUMS Environment',
+          "EcoMake Login",
+          "Hub Login",
+          "Metal Room Login",
+          "Wood Room Login",
+          "Shift Time Clock",
+          "SUMS Environment",
+          "Request Replacement PI",
+          "Test Inventory Tool",
+          "CAE Helpdesk",
+          "SUMS Environment",
           // Add any other exact names to exclude
         ];
 
         // Filter out unwanted entries
         const filteredData = data.filter((tool) => {
           const hasExcludedKeyword = excludeKeywords.some((keyword) =>
-            tool.ToolName.includes(keyword)
+            tool.ToolName.includes(keyword),
           );
           const isExcludedExactName = excludeExactNames.includes(tool.ToolName);
           return !hasExcludedKeyword && !isExcludedExactName;
@@ -57,8 +57,8 @@ const ToolStatusListView = () => {
 
         setToolStatusData(filteredData);
       } catch (error) {
-        console.error('Error fetching tool status data:', error);
-        setError('Failed to load tool status. Please try again later.');
+        console.error("Error fetching tool status data:", error);
+        setError("Failed to load tool status. Please try again later.");
       } finally {
         setLoading(false); // set loading to false when the data fetch completes
       }
@@ -81,8 +81,10 @@ const ToolStatusListView = () => {
   return (
     <div className="p-4 border rounded-lg shadow">
       {/* the header for the tool status section */}
-      <h3 className="text-lg font-semibold mb-4 sticky top-0 bg-white z-10">Tool Status</h3>
-      
+      <h3 className="text-lg font-semibold mb-4 sticky top-0 bg-white z-10">
+        Tool Status
+      </h3>
+
       {/* a scrollable container for the tool list */}
       <div className="max-h-96 overflow-y-auto">
         {/* a grid container to display each tool in a separate card */}
@@ -96,9 +98,12 @@ const ToolStatusListView = () => {
             >
               {/* displaying the tool name and status */}
               <div>
-                <p className="text-sm font-medium">{tool.ToolName}</p> {/* tool name */}
+                <p className="text-sm font-medium">{tool.ToolName}</p>{" "}
+                {/* tool name */}
                 {/* tool status, conditionally setting the text color to green if available, red if not */}
-                <p className={`text-sm ${tool.Status.includes('Available') ? 'text-green-600' : 'text-red-600'}`}>
+                <p
+                  className={`text-sm ${tool.Status.includes("Available") ? "text-green-600" : "text-red-600"}`}
+                >
                   {tool.Status}
                 </p>
               </div>

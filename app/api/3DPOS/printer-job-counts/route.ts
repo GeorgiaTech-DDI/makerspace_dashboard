@@ -5,7 +5,7 @@ export async function getPrinterJobCounts(
   session: string,
   printer_id: number,
   limit = 20,
-  offset = 0
+  offset = 0,
 ) {
   const printJobsUrl =
     "https://cloud.3dprinteros.com/apiglobal/get_printer_jobs";
@@ -59,6 +59,8 @@ export async function getPrinterJobCounts(
   return jobCounts;
 }
 
+export const dynamic = "force-dynamic"; // Required because we're using headers
+export const runtime = "edge"; // Optional: Choose edge or nodejs runtime
 export async function GET(request: NextRequest) {
   try {
     const session = request.headers.get("x-printer-session");
@@ -77,7 +79,7 @@ export async function GET(request: NextRequest) {
         session,
         parseInt(printerID),
         parseInt(limit),
-        parseInt(offset)
+        parseInt(offset),
       );
       printerJobStatusMap[printerID] = jobCounts;
     }

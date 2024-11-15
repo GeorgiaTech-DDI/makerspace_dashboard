@@ -1,69 +1,135 @@
-"use client"
+"use client";
 
-import Sidebar from "../src/ui/navigation/sidebar"
-import {
-  BarChart, LineChart, PieChart, Bar, Line, Pie, ResponsiveContainer, XAxis, YAxis,
-  RadarChart,
-  PolarGrid,
-  PolarAngleAxis,
-  CartesianGrid,
-  Legend
-} from "recharts"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Table, TableBody, TableCell, TableHead, TableRow } from "@/components/ui/table"
-import { TooltipProvider } from "@radix-ui/react-tooltip"
-import { ArrowUpIcon, ArrowDownIcon, TrendingUpIcon, TrendingDownIcon, Radar } from "lucide-react"
-import MetricCard from "../src/ui/visuals/metric-cards/metric-card"
-import ToolStatusListView from "../src/ui/visuals/list-views/list-view-tool-status"
-import IdlePrintersCard from "../src/ui/visuals/metric-cards/idle-printers"
-import PrinterStatusListView from "../src/ui/visuals/list-views/list-view-printer-status"
-import JobLeaderboardPodium from "../src/ui/visuals/leaderboard/leaderboard"
-import PrinterJobCounts from "../src/ui/visuals/job-counts/printerjobcounts"
-import CurrentCapacity from "../src/ui/visuals/metric-cards/current-capacity"
-import BarChartAvgPrintTime from "../src/ui/visuals/bar-charts/bar-chart-avg-print-time"
-import ToolUsageCard from "../src/ui/visuals/metric-cards/tool-usage-card"
-import PercentSuccessfulCard from "./PercentSuccessfulCard"
-import MostCommonReasonCard from "../src/ui/visuals/pie-chart/MostCommonReasonCard"
+import React, { useState, useEffect } from "react";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { ModeToggle } from "@/components/ui/mode-toggle";
+
+import Sidebar from "../src/ui/navigation/sidebar";
+import EquipmentUsageCard from "../src/ui/visuals/header-visuals/equipment-usage";
+import CurrentCapacity from "../src/ui/visuals/header-visuals/current-capacity";
+import DashboardSettingsDrawer from "../src/ui/navigation/drawer";
+import componentRegistry, { DashboardComponent } from "./dashboardComponentsList";
+import withSourceIcon from "../src/ui/visuals/wrappers/withSourceIcon";
+import ActiveUsersCard from "../src/ui/visuals/header-visuals/active-users";
+import NewStudentsCard from "../src/ui/visuals/header-visuals/new-students";
 
 
+const DynamicDashboard = () => {
+  const [isMounted, setIsMounted] = useState(false);
 
+  // Load saved preferences from localStorage on initial render
+  const loadSavedPreferences = () => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("dashboardPreferences");
+      if (saved) {
+        try {
+          const { selectedComponents, componentOrder } = JSON.parse(saved);
+          return {
+            selectedComponents:
+              selectedComponents || Object.keys(componentRegistry),
+            componentOrder: componentOrder || Object.keys(componentRegistry),
+          };
+        } catch (e) {
+          console.error("Error loading saved preferences:", e);
+        }
+      }
+    }
+    return {
+      selectedComponents: Object.keys(componentRegistry),
+      componentOrder: Object.keys(componentRegistry),
+    };
+  };
 
-export default function Dashboard() {
-  const metricData = [
-    {
-      title: "Equipment Usage",
-      value: "85%",
-      change: "-5%",
-      description: "The equipment usage percentage has decreased slightly this month due to scheduled maintenance and equipment upgrades.",
-      trend: [4, 6, 5, 8, 7, 9, 6, 1] // Randomized trend data
-    },
-    {
-      title: "Active Users",
-      value: "580",
-      change: "+12%",
-      description: "The number of active users has increased this month as more students are engaging in projects and workshops.",
-      trend: [5, 7, 6, 10, 8, 9, 11, 11] // Randomized trend data
-    },
-    {
-      title: "New Students",
-      value: "150",
-      change: "+25%",
-      description: "A significant influx of new students joined the makerspace, driven by campus-wide promotion and introductory workshops.",
-      trend: [3, 8, 5, 9, 7, 6, 10, 8] // Randomized trend data
-    },
-  ];
+  const [selectedComponents, setSelectedComponents] = useState(
+    Object.keys(componentRegistry),
+  );
+  const [componentOrder, setComponentOrder] = useState(
+    Object.keys(componentRegistry),
+  );
 
-  
-  const data = [
-    { month: 'Jan', value: 65 },
-    { month: 'Feb', value: 59 },
-    { month: 'Mar', value: 80 },
-    { month: 'Apr', value: 81 },
-    { month: 'May', value: 56 },
-    { month: 'Jun', value: 55 },
-    { month: 'Jul', value: 40 },
-  ];
-  
+  // Load preferences after mount
+  useEffect(() => {
+    const { selectedComponents: savedSelected, componentOrder: savedOrder } =
+      loadSavedPreferences();
+    setSelectedComponents(savedSelected);
+    setComponentOrder(savedOrder);
+    setIsMounted(true);
+  }, []);
+
+  // Save preferences to localStorage whenever they change
+  useEffect(() => {
+    if (isMounted) {
+      localStorage.setItem(
+        "dashboardPreferences",
+        JSON.stringify({
+          selectedComponents,
+          componentOrder,
+        }),
+      );
+    }
+  }, [selectedComponents, componentOrder, isMounted]);
+
+  const handleSettingsSubmit = (data: { components: string[] }) => {
+    setSelectedComponents(data.components);
+  };
+
+  const moveComponent = (fromIndex: number, toIndex: number) => {
+    const newOrder = [...componentOrder];
+    const [moved] = newOrder.splice(fromIndex, 1);
+    newOrder.splice(toIndex, 0, moved);
+    setComponentOrder(newOrder);
+  };
+
+  const renderComponents = () => {
+    // If not mounted yet, render in default order to match SSR
+    const orderToUse = isMounted
+      ? componentOrder
+      : Object.keys(componentRegistry);
+    const selectedToUse = isMounted
+      ? selectedComponents
+      : Object.keys(componentRegistry);
+
+    const fullWidthComponents: DashboardComponent[] = [];
+    const halfWidthComponents: DashboardComponent[] = [];
+
+    orderToUse.forEach((componentId) => {
+      if (!selectedToUse.includes(componentId)) return;
+
+      const config = componentRegistry[componentId];
+      if (config.defaultSize === "full") {
+        fullWidthComponents.push(config);
+      } else {
+        halfWidthComponents.push(config);
+      }
+    });
+
+    return (
+      <>
+        <div className="grid md:grid-cols-2 gap-4">
+          {halfWidthComponents.map((config) => {
+            const Component = config.component;
+            const WrappedComponent = withSourceIcon(Component, config.source);
+            return (
+              <div key={config.id} className="transition-opacity duration-200">
+                <WrappedComponent />
+              </div>
+            );
+          })}
+        </div>
+        <div className="space-y-4">
+          {fullWidthComponents.map((config) => {
+            const Component = config.component;
+            const WrappedComponent = withSourceIcon(Component, config.source);
+            return (
+              <div key={config.id} className="transition-opacity duration-200">
+                <WrappedComponent />
+              </div>
+            );
+          })}
+        </div>
+      </>
+    );
+  };
 
   return (
     <TooltipProvider>
@@ -71,73 +137,37 @@ export default function Dashboard() {
         <Sidebar />
         <div className="flex flex-col">
           <header className="sticky top-0 z-10 flex h-[57px] items-center gap-1 border-b bg-background px-4">
-            <h1 className="text-xl font-semibold">Georgia Tech Invention Studio Dashboard</h1>
-          </header>
-  
-          <main className="flex-1 p-4 space-y-4">
-            {/* First Row: Evenly spaced metric cards with 30% height */}
-            <div className="grid md:grid-cols-4 gap-4">
-              {metricData.map((metric, index) => (
-                <MetricCard
-                  key={index}
-                  title={metric.title}
-                  value={parseInt(metric.value)}
-                  change={metric.change}
-                  trend={metric.trend}
-                />
-              ))}
-              <IdlePrintersCard />
-
-              <ToolUsageCard />
-
-              {/* Include CurrentCapacity component */}
-              <CurrentCapacity />
-
-            </div>
-  
-            {/* Second Row */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Second Row: List views (ToolStatusListView and PrinterStatusListView) */}
-              <ToolStatusListView />
-              <PrinterStatusListView />
-              <JobLeaderboardPodium />
-              <PrinterJobCounts />
-              {/* Second Row: Most Common Reasons Card */}
-            <MostCommonReasonCard />
-            </div>
-  
-            {/* Third Row: Attendance Line Chart */}
-            <div className="p-4 border rounded-lg shadow">
-              <h3 className="text-lg font-semibold mb-4">Attendance Over Time</h3>
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={data}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" />
-                  <YAxis />
-                  <Legend />
-                  <Line
-                    type="monotone"
-                    dataKey="value"
-                    stroke="#B3A369" // GT Gold
-                    fill="rgba(0, 37, 76, 0.5)" // GT Navy with opacity
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-
-            {/* Fourth Row: Average Print Time Bar Chart */}
-            <div className="p-4 border rounded-lg shadow">
-              <BarChartAvgPrintTime
+            <h1 className="text-xl font-semibold flex-1">
+              Georgia Tech Invention Studio Dashboard
+            </h1>
+            <div className="flex items-center gap-2">
+              <DashboardSettingsDrawer
+                selectedComponents={selectedComponents}
+                componentOrder={componentOrder}
+                onSettingsSubmit={handleSettingsSubmit}
+                onOrderChange={moveComponent}
+                componentRegistry={componentRegistry}
               />
+              <ModeToggle />
+            </div>
+          </header>
+
+          <main className="flex-1 p-4 space-y-4">
+            {/* Fixed metric cards row */}
+            <div className="grid md:grid-cols-4 gap-4">
+              <EquipmentUsageCard />
+              <ActiveUsersCard />
+              <NewStudentsCard />
+              <CurrentCapacity />
             </div>
 
-            {/* Fifth Row: Percent Successful Card */}
-            <PercentSuccessfulCard />
-
+            {/* Dynamic components */}
+            {renderComponents()}
           </main>
         </div>
       </div>
     </TooltipProvider>
-  )
-  
-}
+  );
+};
+
+export default DynamicDashboard;

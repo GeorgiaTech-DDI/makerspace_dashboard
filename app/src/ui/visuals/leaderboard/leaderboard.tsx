@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils"; // Utility for joining class names
 
 interface LeaderboardEntry {
   email: string;
@@ -10,28 +10,26 @@ interface LeaderboardEntry {
 }
 
 const JobLeaderboardPodium = () => {
-  const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>([]);
+  const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>(
+    [],
+  );
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('/api/3DPOS/leaderboard', {
-          headers: { 'x-printer-session': 'your-session-key' },
+        const response = await fetch("/api/3DPOS/leaderboard", {
+          headers: { "x-printer-session": "your-session-key" },
         });
 
         if (!response.ok) {
-          throw new Error('Failed to fetch leaderboard data');
+          throw new Error("Failed to fetch leaderboard data");
         }
 
         const data = await response.json();
-        // Filter out entries with empty names before setting the state
-        const validEntries = data.leaderboard.filter(
-          (entry: LeaderboardEntry) => entry.firstname.trim() && entry.lastname.trim()
-        );
-        setLeaderboardData(validEntries);
+        setLeaderboardData(data.leaderboard);
       } catch (err: any) {
-        setError(err.message || 'Unknown error');
+        setError(err.message || "Unknown error");
       }
     };
 
@@ -53,15 +51,19 @@ const JobLeaderboardPodium = () => {
           <div className="flex justify-center space-x-4 mb-8">
             {topThree.map((entry, index) => (
               <div
-                key={entry.email}
+                key={index}
                 className={cn(
-                  "flex flex-col items-center p-4 w-40 h-40 rounded-lg shadow-md",
-                  index === 0 ? "bg-yellow-200 text-black" : 
-                  index === 1 ? "bg-gray-200 text-black" : 
-                  "bg-orange-200 text-black"
+                  "flex flex-col items-center p-4 w-40 h-40 rounded-lg shadow-md", // Same size for all
+                  index === 0
+                    ? "bg-yellow-200 text-black"
+                    : index === 1
+                      ? "bg-gray-200 text-black"
+                      : "bg-orange-200 text-black", // Lighter colors and black text
                 )}
               >
                 <p className="text-lg font-bold text-center mb-auto">
+                  {" "}
+                  {/* Aligned toward the top */}
                   {index + 1}. {entry.firstname} {entry.lastname}
                 </p>
                 <p className="text-sm font-medium">Jobs: {entry.count}</p>
@@ -82,7 +84,9 @@ const JobLeaderboardPodium = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm font-medium">Jobs Completed: {entry.count}</p>
+                  <p className="text-sm font-medium">
+                    Jobs Completed: {entry.count}
+                  </p>
                 </CardContent>
               </Card>
             ))}

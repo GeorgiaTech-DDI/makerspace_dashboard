@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import LineChartComponent from "../src/ui/visuals/line-chart/line-chart";
+import LineChartComponent from "./line-chart";
 
 export default function PercentSuccessfulCard() {
   const [period, setPeriod] = useState("day"); // Track whether day or week
@@ -24,12 +24,15 @@ export default function PercentSuccessfulCard() {
 
       try {
         const currentDate = getCurrentDate(); // Get the current date
-        const response = await fetch(`/api/3DPOS/jobs?period=${period}&date=${currentDate}`, {
-          method: "GET",
-          headers: {
-            "x-printer-session": "your-session-token-here",
+        const response = await fetch(
+          `/api/3DPOS/jobs?period=${period}&date=${currentDate}`,
+          {
+            method: "GET",
+            headers: {
+              "x-printer-session": "your-session-token-here",
+            },
           },
-        });
+        );
 
         if (!response.ok) {
           throw new Error("Failed to fetch data");

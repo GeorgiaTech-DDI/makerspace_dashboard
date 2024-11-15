@@ -57,7 +57,9 @@ const MostCommonReasonCard = () => {
     <Card>
       <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
         <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
-          <CardTitle>Most Common Cancellation Reasons - Last 3 Months</CardTitle>
+          <CardTitle>
+            Most Common Cancellation Reasons - Last 3 Months
+          </CardTitle>
           <CardDescription>
             Showing the distribution of cancellation reasons
           </CardDescription>
@@ -81,12 +83,13 @@ const MostCommonReasonCard = () => {
                 label={({ reason, percentage }) => `${reason}: ${percentage}%`}
               >
                 {chartData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={COLORS[index % COLORS.length]}
+                  />
                 ))}
               </Pie>
-              <Tooltip
-                content={<ChartTooltipContent />}
-              />
+              <Tooltip content={<ChartTooltipContent />} />
             </PieChart>
           </ResponsiveContainer>
         </ChartContainer>
