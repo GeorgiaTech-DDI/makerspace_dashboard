@@ -2,10 +2,10 @@
 
 import React, { useState, useEffect } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { ModeToggle } from "@/components/ui/mode-toggle";
 
 import Sidebar from "../src/ui/navigation/sidebar";
 import EquipmentUsageCard from "../src/ui/visuals/header-visuals/equipment-usage";
-import MetricCard from "../src/ui/visuals/metric-cards/metric-card";
 import CurrentCapacity from "../src/ui/visuals/header-visuals/current-capacity";
 import DashboardSettingsDrawer from "../src/ui/navigation/drawer";
 import componentRegistry from "./dashboardComponentsList";
@@ -140,13 +140,16 @@ const DynamicDashboard = () => {
             <h1 className="text-xl font-semibold flex-1">
               Georgia Tech Invention Studio Dashboard
             </h1>
-            <DashboardSettingsDrawer
-              selectedComponents={selectedComponents}
-              componentOrder={componentOrder}
-              onSettingsSubmit={handleSettingsSubmit}
-              onOrderChange={moveComponent}
-              componentRegistry={componentRegistry}
-            />
+            <div className="flex items-center gap-2">
+              <DashboardSettingsDrawer
+                selectedComponents={selectedComponents}
+                componentOrder={componentOrder}
+                onSettingsSubmit={handleSettingsSubmit}
+                onOrderChange={moveComponent}
+                componentRegistry={componentRegistry}
+              />
+              <ModeToggle />
+            </div>
           </header>
 
           <main className="flex-1 p-4 space-y-4">
