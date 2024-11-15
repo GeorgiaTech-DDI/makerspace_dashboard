@@ -8,21 +8,16 @@ import { getCasLoginUrl, getBaseUrl, validateCasTicket} from './lib/cas';
 const PROTECTED_ROUTES = {
   '/pi': ['PI'],
   '/dashboard': ['PI', 'STAFF', 'STUDENT'],
-  '/admin': ['ADMIN']
 } as const;
 
 async function validateUserRole(username: string): Promise<string[]> {
   const userRoles: Record<string, string[]> = {
     'gburdell3': ['PI'],
-    'professor1': ['PI'],
   };
   return userRoles[username] || ['STUDENT'];
 }
 
 export async function middleware(request: NextRequest) {
-  console.log("Middleware executing for path:", request.nextUrl.pathname);
-  console.log("Cookies:", request.cookies.getAll());
-  console.log("Search params:", Object.fromEntries(request.nextUrl.searchParams));
 
   // Handle existing auth routes for 3DPOS and SUMS
   if (request.nextUrl.pathname.startsWith("/api/3DPOS")) {
@@ -132,7 +127,6 @@ export const config = {
     '/api/SUMS/:path*',
     '/pi/:path*',
     '/dashboard/:path*',
-    '/admin/:path*',
     '/account'
   ]
 };

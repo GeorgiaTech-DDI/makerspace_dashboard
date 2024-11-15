@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { LogIn, LogOut } from "lucide-react";
+import Sidebar from "../src/ui/navigation/sidebar";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 // Determine if we're in production
 const isProduction = process.env.NODE_ENV === 'production';
@@ -22,8 +24,6 @@ const CAS_CONFIG = {
   uri: '/cas'
 };
 
-console.log('Account page module loaded');
-
 const AccountPage = () => {
   const [user, setUser] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -33,7 +33,6 @@ const AccountPage = () => {
       try {
         const response = await fetch('/api/auth/session');
         const data = await response.json();
-        console.log('Session data:', data);
         
         if (data.user !== user) {
           setUser(data.user);
@@ -41,7 +40,6 @@ const AccountPage = () => {
         
         setLoading(false);
       } catch (error) {
-        console.error('Error checking session:', error);
         setLoading(false);
       }
     }
@@ -57,7 +55,6 @@ const AccountPage = () => {
   }, [user]);
 
   const handleLogin = () => {
-    console.log('Login clicked');
     const baseUrl = window.location.origin;
     const serviceUrl = `${baseUrl}/account`;
     
@@ -70,28 +67,23 @@ const AccountPage = () => {
   };
 
   const handleLogout = () => {
-    console.log('Logout clicked');
     const baseUrl = window.location.origin;
     const serviceUrl = `${baseUrl}/account`;
     window.location.href = `/api/auth/logout?service=${encodeURIComponent(serviceUrl)}`;
   };
 
-  console.log('Rendering with state:', { user, loading });
-
-  if (loading) {
-    return (
-      <div className="container mx-auto flex h-screen items-center justify-center p-4">
+  const renderContent = () => {
+    if (loading) {
+      return (
         <Card className="w-full max-w-md">
           <CardContent className="flex items-center justify-center p-8">
             <div className="animate-pulse text-muted-foreground">Loading...</div>
           </CardContent>
         </Card>
-      </div>
-    );
-  }
+      );
+    }
 
-  return (
-    <div className="container mx-auto flex h-screen items-center justify-center p-4">
+    return (
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Account</CardTitle>
@@ -144,7 +136,23 @@ const AccountPage = () => {
           )}
         </CardContent>
       </Card>
-    </div>
+    );
+  };
+
+  return (
+    <TooltipProvider>
+      <div className="grid h-screen w-full pl-[56px]">
+        <Sidebar />
+        <div className="flex flex-col">
+          <header className="sticky top-0 z-10 flex h-[57px] items-center gap-1 border-b bg-background px-4">
+            <h1 className="text-xl font-semibold flex-1">Account Settings</h1>
+          </header>
+          <main className="flex-1 p-4 flex items-center justify-center">
+            {renderContent()}
+          </main>
+        </div>
+      </div>
+    </TooltipProvider>
   );
 };
 
