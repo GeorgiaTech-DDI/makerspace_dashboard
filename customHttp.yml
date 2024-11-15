@@ -1,10 +1,10 @@
-# customHttp.yml
+# customHttp.yml 
 customHeaders:
   # API Routes CORS Headers
   - pattern: "/api/*"
     headers:
       - key: "Access-Control-Allow-Origin"
-        value: "*"
+        value: "*, https://sso.gatech.edu"
       - key: "Access-Control-Allow-Methods"
         value: "GET,POST,OPTIONS"
       - key: "Access-Control-Allow-Headers"
@@ -20,7 +20,7 @@ customHeaders:
       - key: "Access-Control-Allow-Credentials"
         value: "true"
       - key: "Access-Control-Allow-Origin"
-        value: "https://sso.gatech.edu"
+        value: "https://sso.gatech.edu, https://prod.d21mn6i8vq0ak1.amplifyapp.com"
       - key: "Set-Cookie"
         value: "*"
 
