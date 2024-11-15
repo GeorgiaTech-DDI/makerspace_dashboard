@@ -1,28 +1,28 @@
 # customHttp.yml 
 customHeaders:
-  # API Routes CORS Headers
-  - pattern: "/api/*"
-    headers:
-      - key: "Access-Control-Allow-Origin"
-        value: "*, https://sso.gatech.edu"
-      - key: "Access-Control-Allow-Methods"
-        value: "GET,POST,OPTIONS"
-      - key: "Access-Control-Allow-Headers"
-        value: "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, x-printer-session, x-sums-token"
-      - key: "Access-Control-Allow-Credentials"
-        value: "true"
-      - key: "Set-Cookie"
-        value: "*"
-
   # CAS Authentication Headers
   - pattern: "**/*"
     headers:
       - key: "Access-Control-Allow-Credentials"
         value: "true"
       - key: "Access-Control-Allow-Origin"
-        value: "https://sso.gatech.edu, https://prod.d21mn6i8vq0ak1.amplifyapp.com"
-      - key: "Set-Cookie"
+        value: "https://sso.gatech.edu"
+      - key: "Access-Control-Allow-Methods"
+        value: "GET,POST,OPTIONS"
+      - key: "Access-Control-Allow-Headers"
+        value: "Content-Type, Authorization, X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Date, X-Api-Version"
+      - key: "Access-Control-Expose-Headers"
+        value: "Set-Cookie"
+
+  # API Routes
+  - pattern: "/api/*"
+    headers:
+      - key: "Access-Control-Allow-Origin"
         value: "*"
+      - key: "Access-Control-Allow-Methods"
+        value: "GET,POST,OPTIONS"
+      - key: "Access-Control-Allow-Headers"
+        value: "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, x-printer-session, x-sums-token"
 
   # Security Headers
   - pattern: "**/*"
