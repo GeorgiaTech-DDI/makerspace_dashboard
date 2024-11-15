@@ -30,8 +30,8 @@ export default function UnauthorizedPage() {
             dashboard.
           </p>
           <div className="flex gap-4">
-            <Link href="/dashboard">
-              <Button variant="default">Return to Dashboard</Button>
+            <Link href="/">
+              <Button variant="default">Return to Home</Button>
             </Link>
             <Link href="/account">
               <Button variant="outline">Switch Account</Button>
