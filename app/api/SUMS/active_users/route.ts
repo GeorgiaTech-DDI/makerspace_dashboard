@@ -22,7 +22,11 @@ function formatDate(date: Date): string {
   return `${year}-${month}-${day}`;
 }
 
-async function getToolUsages(token: string, startDate: string, endDate: string) {
+async function getToolUsages(
+  token: string,
+  startDate: string,
+  endDate: string,
+) {
   const [egKey, egId] = token.split(":");
   const toolUsageUrl = `https://sums.gatech.edu/SUMS_React_Shift_Scheduler/rest/EGInfo/IndividualToolUsages?EGKey=${egKey}&EGId=${egId}&StartDate=${startDate}&EndDate=${endDate}`;
 
@@ -46,13 +50,15 @@ async function getToolUsages(token: string, startDate: string, endDate: string) 
   }
 }
 
-function getMonthlyActiveUsers(users: UserSession[] | null | undefined): number {
+function getMonthlyActiveUsers(
+  users: UserSession[] | null | undefined,
+): number {
   if (!users || !Array.isArray(users)) {
     return 0;
   }
 
   const uniqueUsers = new Set<string>();
-  
+
   users.forEach((user) => {
     if (!user || !user.StartDateTime || !user.Name) return;
 
@@ -88,38 +94,39 @@ export async function GET(request: NextRequest) {
     const adjustedToday = new Date(
       today.getFullYear(),
       today.getMonth(),
-      today.getDate() - 1
+      today.getDate() - 1,
     );
 
     if (mode === "trend") {
       // Get 7 months of data for the trend view
       const trendData = [];
-      
+
       for (let i = 6; i >= 0; i--) {
         const monthStart = new Date(
           adjustedToday.getFullYear(),
           adjustedToday.getMonth() - i,
-          1
+          1,
         );
-        const monthEnd = i === 0
-          ? adjustedToday
-          : new Date(
-              adjustedToday.getFullYear(),
-              adjustedToday.getMonth() - i + 1,
-              0
-            );
+        const monthEnd =
+          i === 0
+            ? adjustedToday
+            : new Date(
+                adjustedToday.getFullYear(),
+                adjustedToday.getMonth() - i + 1,
+                0,
+              );
 
         const data = await getToolUsages(
           token,
           formatDate(monthStart),
-          formatDate(monthEnd)
+          formatDate(monthEnd),
         );
 
         const hubLoginUsage = data.UsageList.find(
-          (usage: Usage) => usage.ToolName === "Hub Login"
+          (usage: Usage) => usage.ToolName === "Hub Login",
         );
 
-        const activeUsers = hubLoginUsage 
+        const activeUsers = hubLoginUsage
           ? getMonthlyActiveUsers(hubLoginUsage.InUseBy)
           : 0;
 
@@ -132,22 +139,34 @@ export async function GET(request: NextRequest) {
 
       // Get current day and previous month's same day data
       const [currentDayData, previousMonthDayData] = await Promise.all([
-        getToolUsages(token, formatDate(adjustedToday), formatDate(adjustedToday)),
-        getToolUsages(token, formatDate(previousMonthDate), formatDate(previousMonthDate))
+        getToolUsages(
+          token,
+          formatDate(adjustedToday),
+          formatDate(adjustedToday),
+        ),
+        getToolUsages(
+          token,
+          formatDate(previousMonthDate),
+          formatDate(previousMonthDate),
+        ),
       ]);
 
       // Get counts for current and previous day
       const currentDayCount = getMonthlyActiveUsers(
-        currentDayData.UsageList.find((u: Usage) => u.ToolName === "Hub Login")?.InUseBy
+        currentDayData.UsageList.find((u: Usage) => u.ToolName === "Hub Login")
+          ?.InUseBy,
       );
       const previousDayCount = getMonthlyActiveUsers(
-        previousMonthDayData.UsageList.find((u: Usage) => u.ToolName === "Hub Login")?.InUseBy
+        previousMonthDayData.UsageList.find(
+          (u: Usage) => u.ToolName === "Hub Login",
+        )?.InUseBy,
       );
 
       // Calculate day-over-day month change
-      const percentChange = previousDayCount === 0
-        ? 0
-        : ((currentDayCount - previousDayCount) / previousDayCount) * 100;
+      const percentChange =
+        previousDayCount === 0
+          ? 0
+          : ((currentDayCount - previousDayCount) / previousDayCount) * 100;
 
       // Get current month's total (will be the last item in trendData)
       const currentMonthCount = trendData[trendData.length - 1];
@@ -155,19 +174,19 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({
         currentUsers: currentMonthCount.toFixed(2),
         previousUsers: previousDayCount.toFixed(2),
-        percentChange: (percentChange > 0 ? "+" : "") + percentChange.toFixed(1) + "%",
+        percentChange:
+          (percentChange > 0 ? "+" : "") + percentChange.toFixed(1) + "%",
         currentDayUsers: currentDayCount.toFixed(2),
-        trend: trendData
+        trend: trendData,
       });
-
     } else {
       // Default mode - current month data
       const monthStart = new Date(
         adjustedToday.getFullYear(),
         adjustedToday.getMonth(),
-        1
+        1,
       );
-      
+
       const dayStartDate = formatDate(adjustedToday);
       const dayEndDate = formatDate(adjustedToday);
 
@@ -190,17 +209,19 @@ export async function GET(request: NextRequest) {
 
       return NextResponse.json({
         dayActiveUsers: getMonthlyActiveUsers(
-          dayData.UsageList.find((u: Usage) => u.ToolName === "Hub Login")?.InUseBy
+          dayData.UsageList.find((u: Usage) => u.ToolName === "Hub Login")
+            ?.InUseBy,
         ),
         weekActiveUsers: getMonthlyActiveUsers(
-          weekData.UsageList.find((u: Usage) => u.ToolName === "Hub Login")?.InUseBy
+          weekData.UsageList.find((u: Usage) => u.ToolName === "Hub Login")
+            ?.InUseBy,
         ),
         monthActiveUsers: getMonthlyActiveUsers(
-          monthData.UsageList.find((u: Usage) => u.ToolName === "Hub Login")?.InUseBy
+          monthData.UsageList.find((u: Usage) => u.ToolName === "Hub Login")
+            ?.InUseBy,
         ),
       });
     }
-
   } catch (error: any) {
     console.error("Error in GET request:", {
       message: error.message,
@@ -214,9 +235,9 @@ export async function GET(request: NextRequest) {
         previousUsers: "0",
         percentChange: "0%",
         currentDayUsers: "0",
-        trend: [0, 0, 0, 0, 0, 0, 0]
+        trend: [0, 0, 0, 0, 0, 0, 0],
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

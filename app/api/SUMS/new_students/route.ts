@@ -42,14 +42,23 @@ function getCurrentSemester(date: Date): { type: string; year: number } {
   const month = date.getMonth();
   const year = date.getFullYear();
 
-  if (month >= SEMESTERS.SPRING.startMonth && month <= SEMESTERS.SPRING.endMonth) {
-    return { type: 'SPRING', year };
-  } else if (month >= SEMESTERS.SUMMER.startMonth && month <= SEMESTERS.SUMMER.endMonth) {
-    return { type: 'SUMMER', year };
-  } else if (month >= SEMESTERS.FALL.startMonth && month <= SEMESTERS.FALL.endMonth) {
-    return { type: 'FALL', year };
+  if (
+    month >= SEMESTERS.SPRING.startMonth &&
+    month <= SEMESTERS.SPRING.endMonth
+  ) {
+    return { type: "SPRING", year };
+  } else if (
+    month >= SEMESTERS.SUMMER.startMonth &&
+    month <= SEMESTERS.SUMMER.endMonth
+  ) {
+    return { type: "SUMMER", year };
+  } else if (
+    month >= SEMESTERS.FALL.startMonth &&
+    month <= SEMESTERS.FALL.endMonth
+  ) {
+    return { type: "FALL", year };
   } else {
-    return { type: 'SPRING', year: year + 1 };
+    return { type: "SPRING", year: year + 1 };
   }
 }
 
@@ -61,7 +70,11 @@ function getSemesterDateRange(semester: { type: string; year: number }) {
   };
 }
 
-async function getToolUsages(token: string, startDate: string, endDate: string) {
+async function getToolUsages(
+  token: string,
+  startDate: string,
+  endDate: string,
+) {
   const [egKey, egId] = token.split(":");
   const toolUsageUrl = `https://sums.gatech.edu/SUMS_React_Shift_Scheduler/rest/EGInfo/IndividualToolUsages?EGKey=${egKey}&EGId=${egId}&StartDate=${startDate}&EndDate=${endDate}`;
 
@@ -76,17 +89,17 @@ async function getToolUsages(token: string, startDate: string, endDate: string) 
     const response = await fetch(toolUsageUrl);
     if (!response.ok) {
       throw new Error(
-        `Failed to fetch tool usages: ${response.status} ${response.statusText}`
+        `Failed to fetch tool usages: ${response.status} ${response.statusText}`,
       );
     }
     const data = await response.json();
-    
+
     // Cache the result
     cache.set(cacheKey, {
       data,
       timestamp: Date.now(),
     });
-    
+
     return data;
   } catch (error) {
     console.error("Error in getToolUsages:", error);
@@ -94,25 +107,28 @@ async function getToolUsages(token: string, startDate: string, endDate: string) 
   }
 }
 
-function getNewUsers(currentUsers: Set<string>, previousUsers: Set<string>): number {
+function getNewUsers(
+  currentUsers: Set<string>,
+  previousUsers: Set<string>,
+): number {
   const newUsers = new Set(
-    [...currentUsers].filter(user => !previousUsers.has(user))
+    [...currentUsers].filter((user) => !previousUsers.has(user)),
   );
   return newUsers.size;
 }
 
 function extractUniqueUsers(data: ToolUsageResponse): Set<string> {
   const users = new Set<string>();
-  const hubLoginUsage = data.UsageList.find(u => u.ToolName === "Hub Login");
-  
+  const hubLoginUsage = data.UsageList.find((u) => u.ToolName === "Hub Login");
+
   if (hubLoginUsage?.InUseBy) {
-    hubLoginUsage.InUseBy.forEach(user => {
+    hubLoginUsage.InUseBy.forEach((user) => {
       if (user.Name && user.StartDateTime) {
         users.add(user.Name);
       }
     });
   }
-  
+
   return users;
 }
 
@@ -132,45 +148,46 @@ export async function GET(request: NextRequest) {
     const adjustedToday = new Date(
       today.getFullYear(),
       today.getMonth(),
-      today.getDate() - 1
+      today.getDate() - 1,
     );
 
     if (mode === "trend") {
       const trendData = [];
       const currentSemester = getCurrentSemester(adjustedToday);
-      
+
       // Get data for last 7 months
       for (let i = 6; i >= 0; i--) {
         const monthStart = new Date(
           adjustedToday.getFullYear(),
           adjustedToday.getMonth() - i,
-          1
+          1,
         );
-        const monthEnd = i === 0
-          ? adjustedToday
-          : new Date(
-              adjustedToday.getFullYear(),
-              adjustedToday.getMonth() - i + 1,
-              0
-            );
+        const monthEnd =
+          i === 0
+            ? adjustedToday
+            : new Date(
+                adjustedToday.getFullYear(),
+                adjustedToday.getMonth() - i + 1,
+                0,
+              );
 
         // Get current month data
         const currentData = await getToolUsages(
           token,
           formatDate(monthStart),
-          formatDate(monthEnd)
+          formatDate(monthEnd),
         );
 
         // Get previous semester data for comparison
         const previousSemesterStart = getSemesterDateRange({
           type: currentSemester.type,
-          year: currentSemester.year - 1
+          year: currentSemester.year - 1,
         }).start;
-        
+
         const previousData = await getToolUsages(
           token,
           formatDate(previousSemesterStart),
-          formatDate(monthStart)
+          formatDate(monthStart),
         );
 
         const currentUsers = extractUniqueUsers(currentData);
@@ -185,37 +202,44 @@ export async function GET(request: NextRequest) {
       previousMonthDate.setMonth(previousMonthDate.getMonth() - 1);
 
       const [currentDayData, previousMonthDayData] = await Promise.all([
-        getToolUsages(token, formatDate(adjustedToday), formatDate(adjustedToday)),
-        getToolUsages(token, formatDate(previousMonthDate), formatDate(previousMonthDate))
+        getToolUsages(
+          token,
+          formatDate(adjustedToday),
+          formatDate(adjustedToday),
+        ),
+        getToolUsages(
+          token,
+          formatDate(previousMonthDate),
+          formatDate(previousMonthDate),
+        ),
       ]);
 
       const currentDayUsers = extractUniqueUsers(currentDayData);
       const previousDayUsers = extractUniqueUsers(previousMonthDayData);
-      
-      const currentDayNewUsers = getNewUsers(
-        currentDayUsers,
-        previousDayUsers
-      );
-      
+
+      const currentDayNewUsers = getNewUsers(currentDayUsers, previousDayUsers);
+
       const previousDayNewUsers = trendData[trendData.length - 2];
-      
-      const percentChange = previousDayNewUsers === 0
-        ? 0
-        : ((currentDayNewUsers - previousDayNewUsers) / previousDayNewUsers) * 100;
+
+      const percentChange =
+        previousDayNewUsers === 0
+          ? 0
+          : ((currentDayNewUsers - previousDayNewUsers) / previousDayNewUsers) *
+            100;
 
       return NextResponse.json({
         currentNewUsers: trendData[trendData.length - 1].toFixed(2),
         previousNewUsers: previousDayNewUsers.toFixed(2),
-        percentChange: (percentChange > 0 ? "+" : "") + percentChange.toFixed(1) + "%",
+        percentChange:
+          (percentChange > 0 ? "+" : "") + percentChange.toFixed(1) + "%",
         currentDayNewUsers: currentDayNewUsers.toFixed(2),
-        trend: trendData
+        trend: trendData,
       });
-
     } else {
       // Default mode - current semester data
       const currentSemester = getCurrentSemester(adjustedToday);
       const { start: semesterStart } = getSemesterDateRange(currentSemester);
-      
+
       const dayStartDate = formatDate(adjustedToday);
       const dayEndDate = formatDate(adjustedToday);
 
@@ -233,13 +257,13 @@ export async function GET(request: NextRequest) {
       // Get previous semester data for comparison
       const previousSemesterStart = getSemesterDateRange({
         type: currentSemester.type,
-        year: currentSemester.year - 1
+        year: currentSemester.year - 1,
       }).start;
-      
+
       const previousSemesterData = await getToolUsages(
         token,
         formatDate(previousSemesterStart),
-        semesterStartDate
+        semesterStartDate,
       );
 
       const previousUsers = extractUniqueUsers(previousSemesterData);
@@ -260,7 +284,6 @@ export async function GET(request: NextRequest) {
         semesterNewUsers: getNewUsers(semesterUsers, previousUsers),
       });
     }
-
   } catch (error: any) {
     console.error("Error in GET request:", error);
     return NextResponse.json(
@@ -270,9 +293,9 @@ export async function GET(request: NextRequest) {
         previousNewUsers: "0",
         percentChange: "0%",
         currentDayNewUsers: "0",
-        trend: [0, 0, 0, 0, 0, 0, 0]
+        trend: [0, 0, 0, 0, 0, 0, 0],
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -51,7 +51,7 @@ const ActiveUsersCard = () => {
                   key={index}
                   className="w-[8%] h-8 bg-muted animate-pulse"
                   style={{
-                    animationDelay: `${index * 100}ms`
+                    animationDelay: `${index * 100}ms`,
                   }}
                 />
               ))}
@@ -127,7 +127,7 @@ function TrendChart({ data }: { data: number[] }) {
           key={index}
           className="bg-primary w-[8%]"
           style={{
-            height: `${((value - min) / range) * 100}%`
+            height: `${((value - min) / range) * 100}%`,
           }}
         />
       ))}

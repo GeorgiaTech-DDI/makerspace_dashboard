@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { StorageVersionCheck } from "./flush";
-import { ThemeProvider } from "@/components/theme-provider"
+import { ThemeProvider } from "@/components/theme-provider";
 import localFont from "next/font/local";
 import "./globals.css";
 

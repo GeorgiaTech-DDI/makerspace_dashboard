@@ -35,7 +35,9 @@ const EquipmentUsageCard = () => {
     return (
       <Card className="overflow-hidden">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Equipment Usage Hours</CardTitle>
+          <CardTitle className="text-sm font-medium">
+            Equipment Usage Hours
+          </CardTitle>
           <TrendingUpIcon className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent className="pb-2">
@@ -51,7 +53,7 @@ const EquipmentUsageCard = () => {
                   key={index}
                   className="w-[8%] h-8 bg-muted animate-pulse"
                   style={{
-                    animationDelay: `${index * 100}ms`
+                    animationDelay: `${index * 100}ms`,
                   }}
                 />
               ))}
@@ -66,7 +68,9 @@ const EquipmentUsageCard = () => {
     return (
       <Card className="overflow-hidden">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Equipment Usage Hours</CardTitle>
+          <CardTitle className="text-sm font-medium">
+            Equipment Usage Hours
+          </CardTitle>
           <TrendingUpIcon className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent className="pb-2">
@@ -129,7 +133,7 @@ function TrendChart({ data }: { data: number[] }) {
           key={index}
           className="bg-primary w-[8%]"
           style={{
-            height: `${((value - min) / range) * 100}%`
+            height: `${((value - min) / range) * 100}%`,
           }}
         />
       ))}
