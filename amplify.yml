@@ -1,12 +1,18 @@
-# amplify.yml
 version: 1
 frontend:
   phases:
     preBuild:
       commands:
+        # Clear existing modules and cache
+        - rm -rf node_modules
+        - rm -rf .next
+        # Fresh install
         - npm ci
     build:
       commands:
+        # Debug commands to verify paths
+        - pwd
+        - ls -la components/ui/
         # Create environment file
         - touch .env.production
         # Add environment variables
@@ -31,3 +37,4 @@ frontend:
     paths:
       - node_modules/**/*
       - .next/cache/**/*
+    enabled: false  # Temporarily disable cache
