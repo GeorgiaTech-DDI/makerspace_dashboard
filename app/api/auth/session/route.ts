@@ -7,6 +7,6 @@ export async function GET() {
   
   return Response.json({
     user: sessionCookie?.value || null,
-    isAuthenticated: !!sessionCookie?.value
+    isAuthenticated: !!sessionCookie?.value,
   });
 }

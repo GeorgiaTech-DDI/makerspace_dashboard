@@ -13,7 +13,6 @@ import withSourceIcon from "../src/ui/visuals/wrappers/withSourceIcon";
 import ActiveUsersCard from "../src/ui/visuals/header-visuals/active-users";
 import NewStudentsCard from "../src/ui/visuals/header-visuals/new-students";
 
-
 const DynamicDashboard = () => {
   const [isMounted, setIsMounted] = useState(false);
 

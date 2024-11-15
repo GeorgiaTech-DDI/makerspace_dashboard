@@ -21,18 +21,18 @@ import {
 import { redirect } from "next/dist/server/api-utils";
 import Link from "next/link";
 import { User, LogIn } from "lucide-react";
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 const Sidebar = () => {
   const [user, setUser] = useState<string | null>(null);
 
   useEffect(() => {
     const gtSession = document.cookie
-      .split('; ')
-      .find(row => row.startsWith('gt_session='));
-    
+      .split("; ")
+      .find((row) => row.startsWith("gt_session="));
+
     if (gtSession) {
-      setUser(decodeURIComponent(gtSession.split('=')[1]));
+      setUser(decodeURIComponent(gtSession.split("=")[1]));
     }
   }, []);
 
@@ -83,7 +83,7 @@ const Sidebar = () => {
           </TooltipContent>
         </Tooltip>
       </nav>
-       <nav className="mt-auto grid gap-1 p-2">
+      <nav className="mt-auto grid gap-1 p-2">
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
@@ -121,7 +121,7 @@ const Sidebar = () => {
             </Link>
           </TooltipTrigger>
           <TooltipContent side="right" sideOffset={5}>
-            {user ? 'Account' : 'Sign In'}
+            {user ? "Account" : "Sign In"}
           </TooltipContent>
         </Tooltip>
       </nav>

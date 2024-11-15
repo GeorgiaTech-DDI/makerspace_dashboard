@@ -26,71 +26,71 @@
     /* Theme Variables */
     --background: var(--white);
     --foreground: var(--navy-blue);
-    
+
     --card: var(--white);
     --card-foreground: var(--navy-blue);
-    
+
     --popover: var(--white);
     --popover-foreground: var(--navy-blue);
-    
+
     --primary: var(--tech-gold);
     --primary-foreground: var(--white);
-    
+
     --secondary: var(--white);
     --secondary-foreground: var(--navy-blue);
-    
+
     --muted: var(--pi-mile);
     --muted-foreground: var(--gray-matter);
-    
+
     --accent: var(--tech-gold);
     --accent-foreground: var(--navy-blue);
-    
+
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: var(--white);
-    
+
     --border: var(--pi-mile);
     --input: var(--pi-mile);
     --ring: var(--navy-blue);
-    
+
     /* Chart Colors */
     --chart-1: var(--tech-gold);
     --chart-2: var(--navy-blue);
     --chart-3: var(--white);
     --chart-4: var(--tech-medium-gold);
     --chart-5: var(--tech-dark-gold);
-    
+
     --radius: 0.5rem;
   }
 
   .dark {
     --background: var(--navy-blue);
     --foreground: var(--white);
-    
+
     --card: var(--navy-blue);
     --card-foreground: var(--white);
-    
+
     --popover: var(--navy-blue);
     --popover-foreground: var(--white);
-    
+
     --primary: var(--white);
     --primary-foreground: var(--tech-gold);
-    
+
     --secondary: var(--tech-gold);
     --secondary-foreground: var(--white);
-    
+
     --muted: 205 100% 25%;
     --muted-foreground: var(--white);
-    
+
     --accent: var(--tech-gold);
     --accent-foreground: var(--white);
-    
+
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: var(--white);
-    
+
     --border: var(--navy-blue);
     --input: var(--navy-blue);
     --ring: var(--white);
-    
+
     /* Chart Colors - Dark Mode */
     --chart-1: var(--tech-gold);
     --chart-2: var(--navy-blue);
