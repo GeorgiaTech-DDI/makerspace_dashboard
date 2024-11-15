@@ -14,15 +14,10 @@ import { LogIn, LogOut } from "lucide-react";
 import Sidebar from "../src/ui/navigation/sidebar";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
-// Determine if we're in production
 const isProduction = process.env.NODE_ENV === "production";
-
-// Set default bypass behavior: true in production, false in dev
-// Override with NEXT_PUBLIC_BYPASS_CAS env var if it exists
-const BYPASS_CAS =
-  process.env.NEXT_PUBLIC_BYPASS_CAS !== undefined
-    ? process.env.NEXT_PUBLIC_BYPASS_CAS === "true"
-    : isProduction;
+const BYPASS_CAS = process.env.NEXT_PUBLIC_BYPASS_CAS !== undefined
+  ? process.env.NEXT_PUBLIC_BYPASS_CAS === "true"
+  : isProduction;
 
 const CAS_CONFIG = {
   protocol: "https",
@@ -40,26 +35,15 @@ const AccountPage = () => {
       try {
         const response = await fetch("/api/auth/session");
         const data = await response.json();
-
-        if (data.user !== user) {
-          setUser(data.user);
-        }
-
-        setLoading(false);
+        setUser(data.user);
       } catch (error) {
+        console.error("Failed to check session:", error);
+      } finally {
         setLoading(false);
       }
     }
-
-    // Initial check
     checkSession();
-
-    // Set up interval for continuous checking
-    const interval = setInterval(checkSession, 5000);
-
-    // Cleanup
-    return () => clearInterval(interval);
-  }, [user]);
+  }, []);
 
   const handleLogin = () => {
     const baseUrl = window.location.origin;
@@ -163,5 +147,7 @@ const AccountPage = () => {
     </TooltipProvider>
   );
 };
+
+export default AccountPage;
 
 export default AccountPage;
