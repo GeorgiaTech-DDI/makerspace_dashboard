@@ -1,18 +1,18 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Button } from "../../components/ui/button";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../../components/ui/card";
-import { Avatar, AvatarFallback } from "../../components/ui/avatar";
+} from "@/components/ui/card";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { LogIn, LogOut } from "lucide-react";
 import Sidebar from "../src/ui/navigation/sidebar";
-import { TooltipProvider } from "../../components/ui/tooltip";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 // Determine if we're in production
 const isProduction = process.env.NODE_ENV === "production";
