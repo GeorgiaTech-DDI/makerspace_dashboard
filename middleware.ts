@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
 import { auth3DPOS, authSUMS, checkSession3DPOS } from "./lib/auth";
 import { getCasLoginUrl, getBaseUrl, validateCasTicket } from "./lib/cas";
+import { getCookieConfig } from "@/lib/cookie";
 
 // Define protected routes and their required roles
 const PROTECTED_ROUTES = {
@@ -28,6 +29,7 @@ export async function middleware(request: NextRequest) {
   const session = request.cookies.get("gt_session");
   const ticket = request.nextUrl.searchParams.get("ticket");
   const currentPath = request.nextUrl.pathname;
+  const host = request.headers.get("host");
 
   // Check if this is a protected route
   const isProtectedRoute = Object.keys(PROTECTED_ROUTES).some((path) =>
@@ -72,16 +74,14 @@ export async function middleware(request: NextRequest) {
 
         // Create response with clean URL
         const response = NextResponse.redirect(serviceUrl);
-
-        // Set session cookie
-        response.cookies.set("gt_session", username, {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === "production",
-          sameSite: "lax",
-          maxAge: 24 * 60 * 60, // 24 hours
-          path: "/",
-          domain: request.headers.get("host")?.split(":")[0] || undefined
-        });
+        const cookieConfig = getCookieConfig(host);
+        console.log("Setting cookie with config:", cookieConfig);
+        response.cookies.set("gt_session", username, cookieConfig);
+        // Add CORS headers for Amplify environment
+        if (host?.includes('amplifyapp.com')) {
+          response.headers.set('Access-Control-Allow-Credentials', 'true');
+          response.headers.set('Access-Control-Allow-Origin', request.headers.get('origin') || '*');
+        }
 
         console.log("Setting cookie and redirecting to:", serviceUrl);
         return response;
