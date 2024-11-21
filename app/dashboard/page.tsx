@@ -8,7 +8,7 @@ import Sidebar from "../src/ui/navigation/sidebar";
 import EquipmentUsageCard from "../src/ui/visuals/header-visuals/equipment-usage";
 import CurrentCapacity from "../src/ui/visuals/header-visuals/current-capacity";
 import DashboardSettingsDrawer from "../src/ui/navigation/drawer";
-import componentRegistry from "./dashboardComponentsList";
+import componentRegistry, { DashboardComponent } from "./dashboardComponentsList";
 import withSourceIcon from "../src/ui/visuals/wrappers/withSourceIcon";
 import ActiveUsersCard from "../src/ui/visuals/header-visuals/active-users";
 import NewStudentsCard from "../src/ui/visuals/header-visuals/new-students";
@@ -88,8 +88,8 @@ const DynamicDashboard = () => {
       ? selectedComponents
       : Object.keys(componentRegistry);
 
-    const fullWidthComponents = [];
-    const halfWidthComponents = [];
+    const fullWidthComponents: DashboardComponent[] = [];
+    const halfWidthComponents: DashboardComponent[] = [];
 
     orderToUse.forEach((componentId) => {
       if (!selectedToUse.includes(componentId)) return;

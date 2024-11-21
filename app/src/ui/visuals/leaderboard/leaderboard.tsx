@@ -36,7 +36,7 @@ const JobLeaderboardPodium = () => {
     fetchData();
   }, []);
 
-  // Separate top 3 for podium and the rest for the regular list
+  // Get valid top entries and others
   const topThree = leaderboardData.slice(0, 3);
   const others = leaderboardData.slice(3);
 
@@ -74,8 +74,8 @@ const JobLeaderboardPodium = () => {
           {/* Regular Leaderboard for Others */}
           <div className="grid grid-cols-1 gap-4">
             {others.map((entry, index) => (
-              <Card
-                key={index + 3}
+              <Card 
+                key={entry.email} 
                 className="p-4 shadow-md border flex justify-between items-center"
               >
                 <CardHeader>

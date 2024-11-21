@@ -55,7 +55,6 @@ const PrinterJobCounts = () => {
   // Rotate through metrics every 10 seconds
   useEffect(() => {
     if (metrics.length === 0) return;
-
     const rotationInterval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % metrics.length);
     }, 10000);
@@ -87,7 +86,6 @@ const PrinterJobCounts = () => {
             </Badge>
           </CardTitle>
         </CardHeader>
-
         <CardContent>
           {/* Stats Grid */}
           <div className="grid grid-cols-3 gap-4 mb-4">
