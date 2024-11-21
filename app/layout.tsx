@@ -1,13 +1,18 @@
 import type { Metadata } from "next";
 import { StorageVersionCheck } from "./flush";
 import { ThemeProvider } from "@/components/theme-provider";
-import { Roboto } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
-const roboto = Roboto({
-  weight: ["100", "300", "400", "500", "700", "900"],
-  variable: "--font-roboto",
-  subsets: ["latin"],
+const geistSans = localFont({
+  src: "./fonts/GeistVF.woff",
+  variable: "--font-geist-sans",
+  weight: "100 900",
+});
+const geistMono = localFont({
+  src: "./fonts/GeistMonoVF.woff",
+  variable: "--font-geist-mono",
+  weight: "100 900",
 });
 
 export const metadata: Metadata = {
@@ -23,7 +28,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${roboto.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <StorageVersionCheck />
         <ThemeProvider

@@ -3,7 +3,7 @@
 import Sidebar from "./src/ui/navigation/sidebar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { TooltipProvider } from "@radix-ui/react-tooltip";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -48,12 +48,12 @@ export default function Home() {
               <Card className="bg-white shadow-md rounded-lg backdrop-blur-md backdrop-opacity-80">
                 <CardHeader className="p-4">
                   <CardTitle className="text-3xl font-semibold text-gray-800">
-                    Pi Dashboard
+                    PI Dashboard
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-6 text-gray-600">
                   <p>
-                    Monitor the status of Pi devices, manage networked tools, and access data specifically related to the Pi network in the studio.
+                    Monitor the status of PI devices, manage networked tools, and access data specifically related to the PI network in the studio.
                   </p>
                   <Button asChild className="mt-6 w-full bg-primary hover:bg-[#003057] active:bg-[#003057] transform transition duration-200 ease-in-out hover:scale-105">
                     <Link href="/pi">Enter Pi Dashboard</Link>
